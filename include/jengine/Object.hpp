@@ -30,13 +30,13 @@ public:
 
     void deleteChildren();
 
-    // Don't override
-    void __input();
+    // Don't override, only for internal usage.
+    virtual void __input();
 
-    // Don't override
-    void __update(float dt);
+    // Don't override, only for internal usage.
+    virtual void __update(float dt);
 
-    // Don't override
+    // Don't override, only for internal usage.
     void __output();
 
 protected:

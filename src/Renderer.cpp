@@ -27,7 +27,7 @@ Renderer::Renderer() : Object()
         throw std::runtime_error("Failed to create renderer");
     }
 
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }
 
 Renderer::~Renderer()

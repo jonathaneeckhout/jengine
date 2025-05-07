@@ -64,6 +64,8 @@ bool Object::addChild(Object *object)
         return false;
     }
 
+    object->parent = this;
+
     children.push_back(object);
 
     return true;
@@ -82,6 +84,8 @@ bool Object::removeChild(const std::string &id)
         return false;
     }
 
+    (*it)->parent = nullptr;
+
     children.erase(it);
     return true;
 }
@@ -91,7 +95,7 @@ bool Object::deleteChild(const std::string &id)
     auto it = std::find_if(children.begin(), children.end(),
                            [&](Object *child)
                            {
-                               return child && child->id == id; // or child->getId()
+                               return child && child->id == id;
                            });
 
     if (it == children.end())
@@ -99,8 +103,10 @@ bool Object::deleteChild(const std::string &id)
         return false;
     }
 
-    delete *it;         // Free the memory
-    children.erase(it); // Remove from vector
+    delete *it;
+
+    children.erase(it);
+
     return true;
 }
 
@@ -115,32 +121,32 @@ void Object::deleteChildren()
 
 void Object::__input()
 {
+    input();
+
     for (auto &child : children)
     {
         child->__input();
     }
-
-    input();
 }
 
 void Object::__update(float dt)
 {
+    update(dt);
+
     for (auto &child : children)
     {
         child->__update(dt);
     }
-
-    update(dt);
 }
 
 void Object::__output()
 {
+    output();
+
     for (auto &child : children)
     {
         child->__output();
     }
-
-    output();
 }
 
 void Object::input() {}
