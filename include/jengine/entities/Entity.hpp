@@ -6,10 +6,6 @@
 class Entity : public Object
 {
 public:
-    Vector position;
-
-    Vector globalPosition;
-
     Vector velocity;
 
     Entity();
@@ -18,5 +14,17 @@ public:
 
     virtual ~Entity();
 
-    void __update(float dt) override;
+    Vector getPosition();
+    void setPosition(Vector newPosition);
+
+    Vector getGlobalPosition();
+    void setGlobalPosition(Vector newPosition);
+
+    // Don't override, only for internal usage.
+    void __update_global_position();
+
+private:
+    Vector position;
+
+    Vector globalPosition;
 };

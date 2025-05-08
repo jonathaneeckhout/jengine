@@ -31,10 +31,10 @@ public:
     void deleteChildren();
 
     // Don't override, only for internal usage.
-    virtual void __input();
+    void __input();
 
     // Don't override, only for internal usage.
-    virtual void __update(float dt);
+    void __update(float dt);
 
     // Don't override, only for internal usage.
     void __output();
