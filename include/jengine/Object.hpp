@@ -30,6 +30,8 @@ public:
 
     void deleteChildren();
 
+    void queueDelete();
+
     // Don't override, only for internal usage.
     void __input();
 

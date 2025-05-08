@@ -2,6 +2,7 @@
 
 #include "jengine/Object.hpp"
 #include "jengine/utils/uuid.hpp"
+#include "jengine/Game.hpp"
 
 Object::Object()
 {
@@ -117,6 +118,17 @@ void Object::deleteChildren()
         delete child;
     }
     children.clear();
+}
+
+void Object::queueDelete()
+{
+    Game *game = Game::getInstance();
+    if (game == nullptr)
+    {
+        return;
+    }
+
+    game->queueDeleteObject(this);
 }
 
 void Object::__input()

@@ -108,6 +108,22 @@ void Game::stop()
     running = false;
 }
 
+void Game::queueDeleteObject(Object *object)
+{
+    ToBeDeleted *ripObject = new ToBeDeleted();
+    ripObject->id = object->getId();
+
+    Object *current = object;
+    while (Object *parent = current->getParent())
+    {
+        ripObject->parents.push_front(parent->getId());
+
+        current = parent;
+    }
+
+    toBedeleted.push_back(ripObject);
+}
+
 void Game::input()
 {
     for (auto &child : getChildren())
@@ -122,6 +138,34 @@ void Game::update(float dt)
     {
         child->__update(dt);
     }
+
+    // Remove queued to be deleted objects
+    for (auto &ripObject : toBedeleted)
+    {
+        Object *ripObjectParent = this;
+        for (auto &parentId : ripObject->parents)
+        {
+            if (parentId == getId())
+            {
+                continue;
+            }
+
+            ripObjectParent = ripObjectParent->getChild(parentId);
+            if (ripObjectParent == nullptr)
+            {
+                break;
+            }
+        }
+
+        if (ripObjectParent != nullptr)
+        {
+            ripObjectParent->deleteChild(ripObject->id);
+        }
+
+        delete ripObject;
+    }
+
+    toBedeleted.clear();
 }
 
 void Game::output()
