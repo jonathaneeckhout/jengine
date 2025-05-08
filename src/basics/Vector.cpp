@@ -1,4 +1,4 @@
-#include "jengine/Vector.hpp"
+#include "jengine/basics/Vector.hpp"
 
 float Vector::magnitude() const
 {

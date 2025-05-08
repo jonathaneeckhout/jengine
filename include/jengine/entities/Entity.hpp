@@ -1,7 +1,7 @@
 #pragma once
 
-#include "jengine/Vector.hpp"
-#include "jengine/Object.hpp"
+#include "jengine/basics/Vector.hpp"
+#include "jengine/basics/Object.hpp"
 
 class Entity : public Object
 {
@@ -16,10 +16,10 @@ public:
 
     virtual ~Entity();
 
-    Vector getPosition();
+    Vector getPosition() const;
     void setPosition(Vector newPosition);
 
-    Vector getGlobalPosition();
+    Vector getGlobalPosition() const;
     void setGlobalPosition(Vector newPosition);
 
     // Don't override, only for internal usage.

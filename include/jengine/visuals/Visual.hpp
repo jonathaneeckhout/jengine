@@ -1,8 +1,9 @@
 #pragma once
 
-#include <jengine/Vector.hpp>
-#include <jengine/entities/Entity.hpp>
 #include <SDL2/SDL.h>
+
+#include "jengine/basics/Vector.hpp"
+#include "jengine/entities/Entity.hpp"
 
 class Visual : public Entity
 {

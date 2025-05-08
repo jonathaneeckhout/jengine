@@ -1,16 +1,16 @@
 #pragma once
 
-#include <jengine/visuals/Visual.hpp>
+#include "jengine/visuals/Visual.hpp"
 
 class Square : public Visual
 {
 public:
-    unsigned int width = 0;
-    unsigned int height = 0;
+    int width = 0;
+    int height = 0;
 
-    Square(unsigned int width, unsigned int height);
+    Square(int width, int height);
 
-    Square(Vector position, unsigned int width, unsigned int height);
+    Square(Vector position, int width, int height);
 
     ~Square();
 

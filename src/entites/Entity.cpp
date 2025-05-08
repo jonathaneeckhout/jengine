@@ -14,7 +14,7 @@ Entity::Entity(Vector position, Vector velocity) : velocity(velocity), position(
 
 Entity::~Entity() {}
 
-Vector Entity::getPosition()
+Vector Entity::getPosition() const
 {
     return position;
 }
@@ -26,7 +26,7 @@ void Entity::setPosition(Vector newPosition)
     __update_global_position();
 }
 
-Vector Entity::getGlobalPosition()
+Vector Entity::getGlobalPosition() const
 {
     return globalPosition;
 }

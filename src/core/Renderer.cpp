@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "jengine/Renderer.hpp"
+#include "jengine/core/Renderer.hpp"
 
 Renderer *Renderer::instancePtr = NULL;
 

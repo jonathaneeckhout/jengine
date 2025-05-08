@@ -5,8 +5,8 @@
 #include <string>
 #include <map>
 
-#include "jengine/Object.hpp"
-#include "jengine/Vector.hpp"
+#include "jengine/basics/Object.hpp"
+#include "jengine/basics/Vector.hpp"
 
 class Renderer : public Object
 {

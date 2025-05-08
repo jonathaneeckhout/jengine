@@ -1,8 +1,8 @@
 #include <algorithm>
 
-#include "jengine/Object.hpp"
+#include "jengine/basics/Object.hpp"
 #include "jengine/utils/uuid.hpp"
-#include "jengine/Game.hpp"
+#include "jengine/core/Game.hpp"
 
 Object::Object()
 {

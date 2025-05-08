@@ -1,4 +1,4 @@
-#include "jengine/Controls.hpp"
+#include "jengine/core/Controls.hpp"
 
 Controls *Controls::instancePtr = NULL;
 

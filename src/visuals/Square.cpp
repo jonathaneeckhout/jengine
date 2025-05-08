@@ -1,9 +1,9 @@
 #include <jengine/visuals/Square.hpp>
-#include <jengine/Renderer.hpp>
+#include <jengine/core/Renderer.hpp>
 
-Square::Square(unsigned int width, unsigned int height) : width(width), height(height) {}
+Square::Square(int width, int height) : width(width), height(height) {}
 
-Square::Square(Vector position, unsigned int width, unsigned int height) : Visual(position), width(width), height(height) {}
+Square::Square(Vector position, int width, int height) : Visual(position), width(width), height(height) {}
 
 Square::~Square() {}
 
@@ -17,9 +17,9 @@ void Square::output()
 
     Vector globalPosition = getGlobalPosition();
 
-    SDL_FRect square = {globalPosition.x, globalPosition.y, float(width), float(height)};
+    SDL_Rect square = {static_cast<int>(globalPosition.x), static_cast<int>(globalPosition.y), width, height};
 
     SDL_SetRenderDrawColor(renderer->renderer, color.r, color.g, color.b, color.a);
 
-    SDL_RenderFillRectF(renderer->renderer, &square);
+    SDL_RenderFillRect(renderer->renderer, &square);
 }

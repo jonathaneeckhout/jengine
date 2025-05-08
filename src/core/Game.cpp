@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "jengine/Game.hpp"
+#include "jengine/core/Game.hpp"
 
 Game *Game::instancePtr = NULL;
 
@@ -178,4 +178,9 @@ void Game::output()
     }
 
     renderer->present();
+}
+
+void Game::setFPS(float newFPS)
+{
+    fps = newFPS;
 }

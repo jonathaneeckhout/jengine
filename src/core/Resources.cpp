@@ -1,4 +1,4 @@
-#include "jengine/Resources.hpp"
+#include "jengine/core/Resources.hpp"
 
 Resources *Resources::instancePtr = NULL;
 

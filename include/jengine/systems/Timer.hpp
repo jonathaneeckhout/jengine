@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "jengine/Object.hpp"
+#include "jengine/basics/Object.hpp"
 
 class Timer : public Object
 {

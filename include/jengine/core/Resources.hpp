@@ -4,7 +4,7 @@
 #include <map>
 #include <SDL2/SDL_ttf.h>
 
-#include "jengine/Object.hpp"
+#include "jengine/basics/Object.hpp"
 
 class Resources : public Object
 {

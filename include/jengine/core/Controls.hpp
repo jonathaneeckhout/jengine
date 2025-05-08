@@ -3,8 +3,8 @@
 #include <SDL2/SDL.h>
 #include <functional>
 
-#include "jengine/Object.hpp"
-#include "jengine/Vector.hpp"
+#include "jengine/basics/Object.hpp"
+#include "jengine/basics/Vector.hpp"
 
 class Controls : public Object
 {

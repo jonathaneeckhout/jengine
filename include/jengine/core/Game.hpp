@@ -4,10 +4,10 @@
 #include <vector>
 #include <deque>
 
-#include "jengine/Object.hpp"
-#include "jengine/Renderer.hpp"
-#include "jengine/Controls.hpp"
-#include "jengine/Resources.hpp"
+#include "jengine/basics/Object.hpp"
+#include "jengine/core/Renderer.hpp"
+#include "jengine/core/Controls.hpp"
+#include "jengine/core/Resources.hpp"
 
 class ToBeDeleted
 {
@@ -32,6 +32,8 @@ public:
     void stop();
 
     void queueDeleteObject(Object *object);
+
+    void setFPS(float newFPS);
 
 private:
     static Game *instancePtr;
