@@ -6,7 +6,7 @@
 
 #include "jengine/core/Game.hpp"
 
-Game *Game::instancePtr = NULL;
+Game *Game::instancePtr = nullptr;
 
 Game::Game() : Object(), running(false)
 {
@@ -21,6 +21,10 @@ Game::Game() : Object(), running(false)
     {
         throw std::runtime_error("Failed to initialize TFF");
     }
+
+    phyics = Physics::getInstance();
+
+    addChild(phyics);
 
     renderer = Renderer::getInstance();
 
@@ -42,14 +46,16 @@ Game::Game() : Object(), running(false)
 
 Game::~Game()
 {
-    removeChild(controls->getId());
+    removeChild(phyics->getId());
     removeChild(renderer->getId());
+    removeChild(controls->getId());
     removeChild(resources->getId());
 
     deleteChildren();
 
-    Controls::deleteInstance();
+    Physics::deleteInstance();
     Renderer::deleteInstance();
+    Controls::deleteInstance();
     Resources::deleteInstance();
 
     TTF_Quit();
@@ -59,7 +65,7 @@ Game::~Game()
 
 Game *Game::getInstance()
 {
-    if (instancePtr == NULL)
+    if (instancePtr == nullptr)
     {
         instancePtr = new Game();
     }
@@ -69,10 +75,10 @@ Game *Game::getInstance()
 
 void Game::deleteInstance()
 {
-    if (instancePtr != NULL)
+    if (instancePtr != nullptr)
     {
         delete instancePtr;
-        instancePtr = NULL;
+        instancePtr = nullptr;
     }
 }
 

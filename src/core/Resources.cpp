@@ -1,6 +1,6 @@
 #include "jengine/core/Resources.hpp"
 
-Resources *Resources::instancePtr = NULL;
+Resources *Resources::instancePtr = nullptr;
 
 Resources::Resources() : Object()
 {
@@ -14,7 +14,7 @@ Resources::~Resources()
 
 Resources *Resources::getInstance()
 {
-    if (instancePtr == NULL)
+    if (instancePtr == nullptr)
     {
         instancePtr = new Resources();
     }
@@ -23,10 +23,10 @@ Resources *Resources::getInstance()
 
 void Resources::deleteInstance()
 {
-    if (instancePtr != NULL)
+    if (instancePtr != nullptr)
     {
         delete instancePtr;
-        instancePtr = NULL;
+        instancePtr = nullptr;
     }
 }
 
@@ -41,7 +41,7 @@ void Resources::cleanFonts()
 bool Resources::loadFont(const std::string &name, unsigned char *font, unsigned int size)
 {
     SDL_RWops *newFont = SDL_RWFromConstMem(font, size);
-    if (newFont == NULL)
+    if (newFont == nullptr)
     {
         return false;
     }

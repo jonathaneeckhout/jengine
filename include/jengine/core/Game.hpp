@@ -5,6 +5,7 @@
 #include <deque>
 
 #include "jengine/basics/Object.hpp"
+#include "jengine/core/Physics.hpp"
 #include "jengine/core/Renderer.hpp"
 #include "jengine/core/Controls.hpp"
 #include "jengine/core/Resources.hpp"
@@ -42,9 +43,10 @@ private:
 
     std::atomic<bool> running;
 
-    Renderer *renderer = NULL;
-    Controls *controls = NULL;
-    Resources *resources = NULL;
+    Physics *phyics = nullptr;
+    Renderer *renderer = nullptr;
+    Controls *controls = nullptr;
+    Resources *resources = nullptr;
 
     std::vector<ToBeDeleted *> toBedeleted = {};
 

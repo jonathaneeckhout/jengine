@@ -9,7 +9,7 @@
 class Controls : public Object
 {
 public:
-    std::function<void()> onStop = NULL;
+    std::function<void()> onStop = nullptr;
 
     std::vector<std::function<void(std::string)>> keyPressHandlers = {};
     std::vector<std::function<void(std::string)>> keyReleaseHandlers = {};

@@ -2,7 +2,7 @@
 
 #include "jengine/core/Renderer.hpp"
 
-Renderer *Renderer::instancePtr = NULL;
+Renderer *Renderer::instancePtr = nullptr;
 
 const Vector Renderer::windowSize = {800, 600};
 
@@ -52,7 +52,7 @@ void Renderer::deleteInstance()
     if (instancePtr)
     {
         delete instancePtr;
-        instancePtr = NULL;
+        instancePtr = nullptr;
     }
 }
 

@@ -1,6 +1,6 @@
 #include "jengine/core/Controls.hpp"
 
-Controls *Controls::instancePtr = NULL;
+Controls *Controls::instancePtr = nullptr;
 
 Controls::Controls() : Object()
 {
@@ -11,7 +11,7 @@ Controls::~Controls() {}
 
 Controls *Controls::getInstance()
 {
-    if (instancePtr == NULL)
+    if (instancePtr == nullptr)
     {
         instancePtr = new Controls();
     }
@@ -20,10 +20,10 @@ Controls *Controls::getInstance()
 
 void Controls::deleteInstance()
 {
-    if (instancePtr != NULL)
+    if (instancePtr != nullptr)
     {
         delete instancePtr;
-        instancePtr = NULL;
+        instancePtr = nullptr;
     }
 }
 
@@ -35,7 +35,7 @@ void Controls::input()
         switch (event.type)
         {
         case SDL_QUIT:
-            if (onStop != NULL)
+            if (onStop != nullptr)
             {
                 onStop();
             }
