@@ -28,6 +28,8 @@ public:
     void clear();
     void present();
 
+    void setWindowTitle(std::string title);
+
 private:
     static Renderer *instancePtr;
 

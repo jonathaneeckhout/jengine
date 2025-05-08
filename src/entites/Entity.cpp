@@ -2,7 +2,15 @@
 
 Entity::Entity() {}
 
-Entity::Entity(Vector position) : position(position) {}
+Entity::Entity(Vector position) : position(position)
+{
+    __update_global_position();
+}
+
+Entity::Entity(Vector position, Vector velocity) : velocity(velocity), position(position)
+{
+    __update_global_position();
+}
 
 Entity::~Entity() {}
 
@@ -46,4 +54,16 @@ void Entity::__update_global_position()
             childEntity->__update_global_position();
         }
     }
+}
+
+bool Entity::addChild(Object *object)
+{
+    if (!Object::addChild(object))
+    {
+        return false;
+    }
+
+    __update_global_position();
+
+    return true;
 }

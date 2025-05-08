@@ -22,7 +22,7 @@ public:
 
     Object *getChildByName(const std::string &name);
 
-    bool addChild(Object *object);
+    virtual bool addChild(Object *object);
 
     bool removeChild(const std::string &id);
 

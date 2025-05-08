@@ -66,3 +66,8 @@ void Renderer::present()
 {
     SDL_RenderPresent(renderer);
 }
+
+void Renderer::setWindowTitle(std::string title)
+{
+    SDL_SetWindowTitle(window, title.c_str());
+}

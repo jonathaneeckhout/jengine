@@ -12,6 +12,8 @@ public:
 
     Entity(Vector position);
 
+    Entity(Vector position, Vector velocity);
+
     virtual ~Entity();
 
     Vector getPosition();
@@ -22,6 +24,8 @@ public:
 
     // Don't override, only for internal usage.
     void __update_global_position();
+
+    bool addChild(Object *object) override;
 
 private:
     Vector position;
