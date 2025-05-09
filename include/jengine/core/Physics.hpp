@@ -16,5 +16,7 @@ public:
 private:
     static Physics *instancePtr;
 
+    //TODO: add collisionshapes
+
     Physics();
 };
