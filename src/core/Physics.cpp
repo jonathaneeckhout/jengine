@@ -26,3 +26,47 @@ void Physics::deleteInstance()
         instancePtr = nullptr;
     }
 }
+
+bool Physics::addCollisionShape(CollisionShape &shape)
+{
+    const std::string &id = shape.getId();
+    if (collisionShapes.count(id) > 0)
+    {
+        return false;
+    }
+
+    collisionShapes[id] = &shape;
+    return true;
+}
+
+bool Physics::removeCollisionShape(const CollisionShape &shape) {
+    const std::string &id = shape.getId();
+
+    auto it = collisionShapes.find(id);
+    if (it != collisionShapes.end() && it->second == &shape) {
+        collisionShapes.erase(it);
+        return true;
+    }
+
+    return false;
+}
+
+std::vector<std::string> Physics::checkCollision(const CollisionShape &shape)
+{
+    std::vector<std::string> collisions;
+
+    for (const auto &entry : collisionShapes) {
+        const std::string &id = entry.first;
+        const CollisionShape *other = entry.second;
+
+        if (other == &shape) {
+            continue;
+        }
+
+        if (shape.collidesWith(*other)) {
+            collisions.push_back(id);
+        }
+    }
+
+    return collisions;
+}

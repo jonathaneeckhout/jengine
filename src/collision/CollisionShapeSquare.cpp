@@ -10,18 +10,23 @@ bool CollisionShapeSquare::collidesWith(const Vector &point) const
     return point.x > position.x && point.x < position.x + size.x && point.y > position.y && point.y < position.y + size.y;
 }
 
-bool CollisionShapeSquare::collidesWith(const CollisionShapeSquare &other) const
+bool CollisionShapeSquare::collidesWith(const CollisionShape &other) const
 {
-    if (!(layer & other.layer))
+    return other.collidesWithSquare(*this);
+}
+
+bool CollisionShapeSquare::collidesWithSquare(const CollisionShapeSquare &square) const
+{
+    if (!(viewLayer & square.inLayer))
     {
         return false;
     }
 
     const Vector position = getGlobalPosition();
-    const Vector otherPosition = other.getGlobalPosition();
+    const Vector otherPosition = square.getGlobalPosition();
 
     return position.x + size.x > otherPosition.x &&
-           position.x < otherPosition.x + other.size.x &&
+           position.x < otherPosition.x + square.size.x &&
            position.y + size.y > otherPosition.y &&
-           position.y < otherPosition.y + other.size.y;
+           position.y < otherPosition.y + square.size.y;
 }
