@@ -56,9 +56,9 @@ void Entity::__update_global_position()
     }
 }
 
-bool Entity::addChild(Object *object)
+bool Entity::addChild(Object *child)
 {
-    if (!Object::addChild(object))
+    if (!Object::addChild(child))
     {
         return false;
     }

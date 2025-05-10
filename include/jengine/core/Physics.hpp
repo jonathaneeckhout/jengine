@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include "jengine/basics/Object.hpp"
@@ -25,7 +25,7 @@ public:
 private:
     static Physics *instancePtr;
 
-    std::map<std::string, CollisionShape *> collisionShapes;
+    std::unordered_map<std::string, CollisionShape *> collisionShapes;
 
     Physics();
 };

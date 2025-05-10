@@ -32,17 +32,20 @@ std::vector<Object *> &Object::getChildren()
     return children;
 }
 
-Object *Object::getChild(const std::string &id)
+Object *Object::getChild(const std::string &childID)
 {
-    for (auto &child : children)
+    auto it = std::find_if(children.begin(), children.end(),
+                           [&](Object *entry)
+                           {
+                               return entry && entry->getId() == childID;
+                           });
+
+    if (it == children.end())
     {
-        if (child->id == id)
-        {
-            return child;
-        }
+        return nullptr;
     }
 
-    return nullptr;
+    return *it;
 }
 
 Object *Object::getChildByName(const std::string &name)
@@ -58,26 +61,60 @@ Object *Object::getChildByName(const std::string &name)
     return nullptr;
 }
 
-bool Object::addChild(Object *object)
+bool Object::addChild(Object *child)
 {
-    if (getChild(object->getId()) != nullptr)
+    if (child == nullptr)
     {
         return false;
     }
 
-    object->parent = this;
+    Game *game = Game::getInstance();
+    if (game == nullptr)
+    {
+        return false;
+    }
 
-    children.push_back(object);
+    // Don't allow game the be added as child
+    if (game->getId() == child->getId())
+    {
+        return false;
+    }
+
+    if (getChild(child->getId()) != nullptr)
+    {
+        return false;
+    }
+
+    child->parent = this;
+
+    children.push_back(child);
 
     return true;
 }
 
-bool Object::removeChild(const std::string &id)
+bool Object::removeChild(Object *child)
 {
+    if (child == nullptr)
+    {
+        return false;
+    }
+
+    Game *game = Game::getInstance();
+    if (game == nullptr)
+    {
+        return false;
+    }
+
+    // Don't allow game the be removed as child
+    if (game->getId() == child->getId())
+    {
+        return false;
+    }
+
     auto it = std::find_if(children.begin(), children.end(),
-                           [&](Object *child)
+                           [&](Object *entry)
                            {
-                               return child && child->id == id;
+                               return entry && entry->getId() == child->getId();
                            });
 
     if (it == children.end())
@@ -85,18 +122,36 @@ bool Object::removeChild(const std::string &id)
         return false;
     }
 
-    (*it)->parent = nullptr;
+    child->parent = nullptr;
 
     children.erase(it);
+
     return true;
 }
 
-bool Object::deleteChild(const std::string &id)
+bool Object::deleteChild(Object *child)
 {
+    if (child == nullptr)
+    {
+        return false;
+    }
+
+    Game *game = Game::getInstance();
+    if (game == nullptr)
+    {
+        return false;
+    }
+
+    // Don't allow game the be removed as child
+    if (game->getId() == child->getId())
+    {
+        return false;
+    }
+
     auto it = std::find_if(children.begin(), children.end(),
-                           [&](Object *child)
+                           [&](Object *entry)
                            {
-                               return child && child->id == id;
+                               return entry && entry->getId() == child->getId();
                            });
 
     if (it == children.end())

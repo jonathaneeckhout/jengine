@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include <deque>
 
@@ -10,13 +11,6 @@
 #include "jengine/core/Controls.hpp"
 #include "jengine/core/Resources.hpp"
 
-class ToBeDeleted
-{
-public:
-    std::string id = "";
-    std::deque<std::string> parents = {};
-};
-
 class Game : public Object
 {
 
@@ -25,6 +19,12 @@ public:
 
     // Delete copy constructor
     Game(const Game &) = delete;
+
+    // Init function must be called after the game instance exists
+    void init();
+
+    // Cleanup function must be called before the game instance is deleted
+    void cleanup();
 
     static Game *getInstance();
     static void deleteInstance();
@@ -48,7 +48,10 @@ private:
     Controls *controls = nullptr;
     Resources *resources = nullptr;
 
-    std::vector<ToBeDeleted *> toBedeleted = {};
+    // Todo: populate this map when objects are added as childs to the game object
+    std::unordered_map<std::string, Object *> objects;
+
+    std::vector<Object *> toBedeleted = {};
 
     Game();
 

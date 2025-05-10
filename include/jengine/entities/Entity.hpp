@@ -25,7 +25,7 @@ public:
     // Don't override, only for internal usage.
     void __update_global_position();
 
-    bool addChild(Object *object) override;
+    bool addChild(Object *child) override;
 
 private:
     Vector position;

@@ -18,16 +18,18 @@ public:
 
     std::vector<Object *> &getChildren();
 
-    Object *getChild(const std::string &id);
+    Object *getChild(const std::string &childID);
 
-    Object *getChildByName(const std::string &name);
+    Object *getChildByName(const std::string &childName);
 
-    virtual bool addChild(Object *object);
+    virtual bool addChild(Object *child);
 
-    bool removeChild(const std::string &id);
+    bool removeChild(Object *child);
 
-    bool deleteChild(const std::string &id);
+    // Don't use this function, use removeChild and queueDelete
+    bool deleteChild(Object *child);
 
+    // Don't use this function, only for internal usage
     void deleteChildren();
 
     void queueDelete();

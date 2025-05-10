@@ -11,7 +11,12 @@ Game *Game::instancePtr = nullptr;
 Game::Game() : Object(), running(false)
 {
     name = "Game";
+}
 
+Game::~Game() {}
+
+void Game::init()
+{
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         throw std::runtime_error("Failed to initialize SDL");
@@ -23,19 +28,15 @@ Game::Game() : Object(), running(false)
     }
 
     phyics = Physics::getInstance();
-
     addChild(phyics);
 
     renderer = Renderer::getInstance();
-
     addChild(renderer);
 
     controls = Controls::getInstance();
-
     addChild(controls);
 
     resources = Resources::getInstance();
-
     addChild(resources);
 
     controls->onStop = [this]()
@@ -44,19 +45,26 @@ Game::Game() : Object(), running(false)
     };
 }
 
-Game::~Game()
+void Game::cleanup()
 {
-    removeChild(phyics->getId());
-    removeChild(renderer->getId());
-    removeChild(controls->getId());
-    removeChild(resources->getId());
+    removeChild(phyics);
+    removeChild(renderer);
+    removeChild(controls);
+    removeChild(resources);
 
     deleteChildren();
 
     Physics::deleteInstance();
+    phyics = nullptr;
+
     Renderer::deleteInstance();
+    renderer = nullptr;
+
     Controls::deleteInstance();
+    controls = nullptr;
+
     Resources::deleteInstance();
+    resources = nullptr;
 
     TTF_Quit();
 
@@ -116,18 +124,11 @@ void Game::stop()
 
 void Game::queueDeleteObject(Object *object)
 {
-    ToBeDeleted *ripObject = new ToBeDeleted();
-    ripObject->id = object->getId();
-
-    Object *current = object;
-    while (Object *parent = current->getParent())
-    {
-        ripObject->parents.push_front(parent->getId());
-
-        current = parent;
+    if (object == nullptr) {
+        return;
     }
 
-    toBedeleted.push_back(ripObject);
+    toBedeleted.push_back(object);
 }
 
 void Game::input()
@@ -146,29 +147,15 @@ void Game::update(float dt)
     }
 
     // Remove queued to be deleted objects
-    for (auto &ripObject : toBedeleted)
+    for (auto object : toBedeleted)
     {
-        Object *ripObjectParent = this;
-        for (auto &parentId : ripObject->parents)
+        Object *objectParent = object->getParent();
+        if (objectParent != nullptr)
         {
-            if (parentId == getId())
-            {
-                continue;
-            }
-
-            ripObjectParent = ripObjectParent->getChild(parentId);
-            if (ripObjectParent == nullptr)
-            {
-                break;
-            }
+            objectParent->deleteChild(object);
+        } else {
+            delete object;
         }
-
-        if (ripObjectParent != nullptr)
-        {
-            ripObjectParent->deleteChild(ripObject->id);
-        }
-
-        delete ripObject;
     }
 
     toBedeleted.clear();
