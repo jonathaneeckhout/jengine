@@ -122,6 +122,12 @@ void Game::queueDeleteObject(Object *object)
         return;
     }
 
+    auto it = std::find(toBedeleted.begin(), toBedeleted.end(), object);
+    if (it != toBedeleted.end())
+    {
+        return;
+    }
+
     toBedeleted.push_back(object);
 }
 
