@@ -6,11 +6,11 @@
 class Object
 {
 public:
+    static bool DeleteObject(Object *object);
+
     std::string name = "";
 
     Object();
-
-    virtual ~Object();
 
     const std::string &getId() const;
 
@@ -26,12 +26,6 @@ public:
 
     bool removeChild(Object *child);
 
-    // Don't use this function, use removeChild and queueDelete
-    bool deleteChild(Object *child);
-
-    // Don't use this function, only for internal usage
-    void deleteChildren();
-
     void queueDelete();
 
     // Don't override, only for internal usage.
@@ -44,6 +38,11 @@ public:
     void __output();
 
 protected:
+    virtual ~Object();
+
+    // This function is called right before the destructor
+    virtual void cleanup();
+
     virtual void input();
 
     virtual void update(float dt);

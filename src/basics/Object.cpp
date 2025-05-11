@@ -13,9 +13,25 @@ Object::~Object()
 {
     for (auto &child : children)
     {
-        delete child;
+        DeleteObject(child);
     }
 }
+
+bool Object::DeleteObject(Object *object)
+{
+    if (object == nullptr)
+    {
+        return false;
+    }
+
+    object->cleanup();
+
+    delete object;
+
+    return true;
+}
+
+void Object::cleanup() {}
 
 const std::string &Object::getId() const
 {
@@ -68,18 +84,6 @@ bool Object::addChild(Object *child)
         return false;
     }
 
-    Game *game = Game::getInstance();
-    if (game == nullptr)
-    {
-        return false;
-    }
-
-    // Don't allow game the be added as child
-    if (game->getId() == child->getId())
-    {
-        return false;
-    }
-
     if (getChild(child->getId()) != nullptr)
     {
         return false;
@@ -95,18 +99,6 @@ bool Object::addChild(Object *child)
 bool Object::removeChild(Object *child)
 {
     if (child == nullptr)
-    {
-        return false;
-    }
-
-    Game *game = Game::getInstance();
-    if (game == nullptr)
-    {
-        return false;
-    }
-
-    // Don't allow game the be removed as child
-    if (game->getId() == child->getId())
     {
         return false;
     }
@@ -127,52 +119,6 @@ bool Object::removeChild(Object *child)
     children.erase(it);
 
     return true;
-}
-
-bool Object::deleteChild(Object *child)
-{
-    if (child == nullptr)
-    {
-        return false;
-    }
-
-    Game *game = Game::getInstance();
-    if (game == nullptr)
-    {
-        return false;
-    }
-
-    // Don't allow game the be removed as child
-    if (game->getId() == child->getId())
-    {
-        return false;
-    }
-
-    auto it = std::find_if(children.begin(), children.end(),
-                           [&](Object *entry)
-                           {
-                               return entry && entry->getId() == child->getId();
-                           });
-
-    if (it == children.end())
-    {
-        return false;
-    }
-
-    delete *it;
-
-    children.erase(it);
-
-    return true;
-}
-
-void Object::deleteChildren()
-{
-    for (Object *child : children)
-    {
-        delete child;
-    }
-    children.clear();
 }
 
 void Object::queueDelete()

@@ -11,7 +11,7 @@
 #include "jengine/core/Controls.hpp"
 #include "jengine/core/Resources.hpp"
 
-class Game : public Object
+class Game
 {
 
 public:
@@ -19,12 +19,6 @@ public:
 
     // Delete copy constructor
     Game(const Game &) = delete;
-
-    // Init function must be called after the game instance exists
-    void init();
-
-    // Cleanup function must be called before the game instance is deleted
-    void cleanup();
 
     static Game *getInstance();
     static void deleteInstance();
@@ -35,6 +29,7 @@ public:
     void queueDeleteObject(Object *object);
 
     void setFPS(float newFPS);
+    void setRootObject(Object *object);
 
 private:
     static Game *instancePtr;
@@ -47,15 +42,13 @@ private:
     Renderer *renderer = nullptr;
     Controls *controls = nullptr;
     Resources *resources = nullptr;
-
-    // Todo: populate this map when objects are added as childs to the game object
-    std::unordered_map<std::string, Object *> objects;
+    Object *rootObject = nullptr;
 
     std::vector<Object *> toBedeleted = {};
 
     Game();
 
-    void input() override;
-    void update(float dt) override;
-    void output() override;
+    void input();
+    void update(float dt);
+    void output();
 };

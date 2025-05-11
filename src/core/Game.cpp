@@ -8,14 +8,7 @@
 
 Game *Game::instancePtr = nullptr;
 
-Game::Game() : Object(), running(false)
-{
-    name = "Game";
-}
-
-Game::~Game() {}
-
-void Game::init()
+Game::Game() : running(false)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -28,16 +21,12 @@ void Game::init()
     }
 
     phyics = Physics::getInstance();
-    addChild(phyics);
 
     renderer = Renderer::getInstance();
-    addChild(renderer);
 
     controls = Controls::getInstance();
-    addChild(controls);
 
     resources = Resources::getInstance();
-    addChild(resources);
 
     controls->onStop = [this]()
     {
@@ -45,15 +34,8 @@ void Game::init()
     };
 }
 
-void Game::cleanup()
+Game::~Game()
 {
-    removeChild(phyics);
-    removeChild(renderer);
-    removeChild(controls);
-    removeChild(resources);
-
-    deleteChildren();
-
     Physics::deleteInstance();
     phyics = nullptr;
 
@@ -65,6 +47,12 @@ void Game::cleanup()
 
     Resources::deleteInstance();
     resources = nullptr;
+
+    if (rootObject)
+    {
+        Object::DeleteObject(rootObject);
+        rootObject = nullptr;
+    }
 
     TTF_Quit();
 
@@ -92,6 +80,11 @@ void Game::deleteInstance()
 
 void Game::run()
 {
+    if (rootObject == nullptr)
+    {
+        throw std::runtime_error("Please set a rootObject before running the engine.");
+    }
+
     running = true;
 
     const auto frameDuration = std::chrono::duration<double>(1.0 / fps);
@@ -124,7 +117,8 @@ void Game::stop()
 
 void Game::queueDeleteObject(Object *object)
 {
-    if (object == nullptr) {
+    if (object == nullptr)
+    {
         return;
     }
 
@@ -133,18 +127,20 @@ void Game::queueDeleteObject(Object *object)
 
 void Game::input()
 {
-    for (auto &child : getChildren())
-    {
-        child->__input();
-    }
+    phyics->__input();
+    renderer->__input();
+    controls->__input();
+    resources->__input();
+    rootObject->__input();
 }
 
 void Game::update(float dt)
 {
-    for (auto &child : getChildren())
-    {
-        child->__update(dt);
-    }
+    phyics->__update(dt);
+    renderer->__update(dt);
+    controls->__update(dt);
+    resources->__update(dt);
+    rootObject->__update(dt);
 
     // Remove queued to be deleted objects
     for (auto object : toBedeleted)
@@ -152,10 +148,10 @@ void Game::update(float dt)
         Object *objectParent = object->getParent();
         if (objectParent != nullptr)
         {
-            objectParent->deleteChild(object);
-        } else {
-            delete object;
+            objectParent->removeChild(object);
         }
+
+        Object::DeleteObject(object);
     }
 
     toBedeleted.clear();
@@ -165,10 +161,11 @@ void Game::output()
 {
     renderer->clear();
 
-    for (auto &child : getChildren())
-    {
-        child->__output();
-    }
+    phyics->__output();
+    renderer->__output();
+    controls->__output();
+    resources->__output();
+    rootObject->__output();
 
     renderer->present();
 }
@@ -176,4 +173,9 @@ void Game::output()
 void Game::setFPS(float newFPS)
 {
     fps = newFPS;
+}
+
+void Game::setRootObject(Object *object)
+{
+    rootObject = object;
 }
