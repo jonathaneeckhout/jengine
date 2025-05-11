@@ -10,10 +10,10 @@ class CollisionShape : public Entity
 {
 public:
     // This is the layer the CollisionShape is in
-    uint32_t inLayer = 0x0001;
+    uint32_t inLayer = 0x00000001;
 
     // This is the layer the CollisionShape sees
-    uint32_t viewLayer = 0x0001;
+    uint32_t viewLayer = 0x00000001;
 
     std::vector<CollisionShape *> colliders;
 

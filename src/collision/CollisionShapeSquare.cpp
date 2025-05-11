@@ -12,16 +12,16 @@ bool CollisionShapeSquare::collidesWith(const Vector &point) const
 
 bool CollisionShapeSquare::collidesWith(const CollisionShape &other) const
 {
+    if (!(viewLayer & other.inLayer))
+    {
+        return false;
+    }
+
     return other.collidesWithSquare(*this);
 }
 
 bool CollisionShapeSquare::collidesWithSquare(const CollisionShapeSquare &square) const
 {
-    if (!(viewLayer & square.inLayer))
-    {
-        return false;
-    }
-
     const Vector position = getGlobalPosition();
     const Vector otherPosition = square.getGlobalPosition();
 
