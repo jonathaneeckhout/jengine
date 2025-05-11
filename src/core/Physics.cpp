@@ -39,11 +39,13 @@ bool Physics::addCollisionShape(CollisionShape &shape)
     return true;
 }
 
-bool Physics::removeCollisionShape(const CollisionShape &shape) {
+bool Physics::removeCollisionShape(const CollisionShape &shape)
+{
     const std::string &id = shape.getId();
 
     auto it = collisionShapes.find(id);
-    if (it != collisionShapes.end() && it->second == &shape) {
+    if (it != collisionShapes.end() && it->second == &shape)
+    {
         collisionShapes.erase(it);
         return true;
     }
@@ -51,20 +53,22 @@ bool Physics::removeCollisionShape(const CollisionShape &shape) {
     return false;
 }
 
-std::vector<std::string> Physics::checkCollision(const CollisionShape &shape)
+std::vector<CollisionShape *> Physics::checkCollision(const CollisionShape &shape)
 {
-    std::vector<std::string> collisions;
+    std::vector<CollisionShape *> collisions;
 
-    for (const auto &entry : collisionShapes) {
-        const std::string &id = entry.first;
-        const CollisionShape *other = entry.second;
+    for (auto &entry : collisionShapes)
+    {
+        CollisionShape *other = entry.second;
 
-        if (other == &shape) {
+        if (other == &shape)
+        {
             continue;
         }
 
-        if (shape.collidesWith(*other)) {
-            collisions.push_back(id);
+        if (shape.collidesWith(*other))
+        {
+            collisions.push_back(other);
         }
     }
 

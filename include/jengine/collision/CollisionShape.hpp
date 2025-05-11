@@ -15,10 +15,10 @@ public:
     // This is the layer the CollisionShape sees
     uint32_t viewLayer = 0x0001;
 
-    std::vector<std::string> colliders;
+    std::vector<CollisionShape *> colliders;
 
-    std::vector<std::function<void(std::string)>> collisionStartHandlers = {};
-    std::vector<std::function<void(std::string)>> collisionEndHandlers = {};
+    std::vector<std::function<void(CollisionShape *shape)>> collisionStartHandlers = {};
+    std::vector<std::function<void(CollisionShape *shape)>> collisionEndHandlers = {};
 
     CollisionShape(Vector position);
     virtual ~CollisionShape();
@@ -29,4 +29,12 @@ public:
     virtual bool collidesWithSquare(const class CollisionShapeSquare &square) const = 0;
 
     void update(float dt) override;
+
+    void cleanup() override;
+
+private:
+    void removeCollider(CollisionShape *shape);
+
+    void triggerStartHandlers(std::vector<CollisionShape *> &addedColliders);
+    void triggerEndHandlers(std::vector<CollisionShape *> &removedColliders);
 };

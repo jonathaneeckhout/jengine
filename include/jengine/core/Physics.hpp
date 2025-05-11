@@ -20,7 +20,7 @@ public:
     bool addCollisionShape(CollisionShape &shape);
     bool removeCollisionShape(const CollisionShape &shape);
 
-    std::vector<std::string> checkCollision(const CollisionShape &shape);
+    std::vector<CollisionShape *> checkCollision(const CollisionShape &shape);
 
 private:
     static Physics *instancePtr;
