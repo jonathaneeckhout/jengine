@@ -9,6 +9,7 @@
 #include <jengine/basics/Vector.hpp>
 
 #include <jengine/entities/Entity.hpp>
+#include <jengine/entities/Body.hpp>
 
 #include <jengine/utils/uuid.hpp>
 

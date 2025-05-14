@@ -15,13 +15,13 @@ public:
     // This is the layer the CollisionShape sees
     uint32_t viewLayer = 0x00000001;
 
-    std::vector<CollisionShape *> colliders;
-
     std::vector<std::function<void(CollisionShape *shape)>> collisionStartHandlers = {};
     std::vector<std::function<void(CollisionShape *shape)>> collisionEndHandlers = {};
 
     CollisionShape(Vector position);
     virtual ~CollisionShape();
+
+    const std::vector<CollisionShape *> getColliders();
 
     virtual bool collidesWith(const CollisionShape &other) const = 0;
 
@@ -32,7 +32,12 @@ public:
 
     void cleanup() override;
 
+    virtual Vector getCollisionNormal(const CollisionShape &other) const = 0;
+    virtual Vector getCollisionNormalSquare(const class CollisionShapeSquare &square) const = 0;
+
 private:
+    std::vector<CollisionShape *> colliders;
+
     void removeCollider(CollisionShape *shape);
 
     void triggerStartHandlers(std::vector<CollisionShape *> &addedColliders);

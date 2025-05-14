@@ -59,6 +59,11 @@ void CollisionShape::update(float)
     triggerStartHandlers(addedColliders);
 }
 
+const std::vector<CollisionShape *> CollisionShape::getColliders()
+{
+    return colliders;
+}
+
 void CollisionShape::removeCollider(CollisionShape *shape)
 {
     auto it = std::remove(colliders.begin(), colliders.end(), shape);

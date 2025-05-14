@@ -12,4 +12,7 @@ public:
     bool collidesWith(const Vector &point) const override;
     bool collidesWith(const CollisionShape &other) const override;
     bool collidesWithSquare(const CollisionShapeSquare &square) const override;
+
+    Vector getCollisionNormal(const CollisionShape &other) const override;
+    Vector getCollisionNormalSquare(const class CollisionShapeSquare &square) const override;
 };

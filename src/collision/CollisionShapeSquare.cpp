@@ -30,3 +30,23 @@ bool CollisionShapeSquare::collidesWithSquare(const CollisionShapeSquare &square
            position.y + size.y > otherPosition.y &&
            position.y < otherPosition.y + square.size.y;
 }
+
+Vector CollisionShapeSquare::getCollisionNormal(const CollisionShape &other) const
+{
+    return other.getCollisionNormalSquare(*this);
+}
+
+Vector CollisionShapeSquare::getCollisionNormalSquare(const class CollisionShapeSquare &square) const
+{
+    const Vector position = getGlobalPosition();
+
+    Vector center = position + size / 2;
+
+    const Vector otherPosition = square.getGlobalPosition();
+
+    Vector otherCenter = otherPosition + square.size / 2;
+
+    Vector normal = (otherCenter - center).normalize();
+
+    return normal;
+}
