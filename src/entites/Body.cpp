@@ -13,7 +13,7 @@ void Body::moveAndSlide(float dt)
 {
     if (collisionShape == nullptr)
     {
-        setPosition(getPosition() + velocity * speed * dt);
+        setPosition(getPosition() + velocity * dt);
 
         return;
     }
@@ -21,7 +21,7 @@ void Body::moveAndSlide(float dt)
 
 void Body::moveAndStop(float dt)
 {
-    Vector newPosition = getPosition() + velocity * speed * dt;
+    Vector newPosition = getPosition() + velocity * dt;
 
     if (collisionShape == nullptr)
     {

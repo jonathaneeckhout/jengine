@@ -7,7 +7,6 @@
 class Body : public Entity
 {
 public:
-    float speed = 0.0;
     CollisionShape *collisionShape = nullptr;
 
     Body();
