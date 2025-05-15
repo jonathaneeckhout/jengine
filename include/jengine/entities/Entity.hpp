@@ -25,7 +25,7 @@ public:
     // Don't override, only for internal usage.
     void __update_global_position();
 
-    bool addChild(std::unique_ptr<Object> child) override;
+    bool addChild(std::shared_ptr<Object> child) override;
 
 private:
     Vector position;

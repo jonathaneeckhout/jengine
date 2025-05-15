@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <functional>
 #include <vector>
+#include <memory>
 
 #include "jengine/entities/Entity.hpp"
 
@@ -15,13 +16,13 @@ public:
     // This is the layer the CollisionShape sees
     uint32_t viewLayer = 0x00000001;
 
-    std::vector<std::function<void(CollisionShape *shape)>> collisionStartHandlers = {};
-    std::vector<std::function<void(CollisionShape *shape)>> collisionEndHandlers = {};
+    std::vector<std::function<void(std::weak_ptr<CollisionShape> shape)>> collisionStartHandlers;
+    std::vector<std::function<void(std::weak_ptr<CollisionShape> shape)>> collisionEndHandlers;
 
     CollisionShape(Vector position);
     virtual ~CollisionShape();
 
-    const std::vector<CollisionShape *> getColliders();
+    const std::vector<std::weak_ptr<CollisionShape>> getColliders();
 
     virtual bool collidesWith(const CollisionShape &other) const = 0;
 
@@ -30,16 +31,17 @@ public:
 
     void update(float dt) override;
 
-    void cleanup() override;
+    void __init() override;
+    void __cleanup() override;
 
     virtual Vector getCollisionNormal(const CollisionShape &other) const = 0;
     virtual Vector getCollisionNormalSquare(const class CollisionShapeSquare &square) const = 0;
 
 private:
-    std::vector<CollisionShape *> colliders;
+    std::vector<std::weak_ptr<CollisionShape>> colliders;
 
-    void removeCollider(CollisionShape *shape);
+    void removeCollider(const CollisionShape *shape);
 
-    void triggerStartHandlers(std::vector<CollisionShape *> &addedColliders);
-    void triggerEndHandlers(std::vector<CollisionShape *> &removedColliders);
+    void triggerStartHandlers(std::vector<std::weak_ptr<CollisionShape>> &addedColliders);
+    void triggerEndHandlers(std::vector<std::weak_ptr<CollisionShape>> &removedColliders);
 };
