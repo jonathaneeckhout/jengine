@@ -1,9 +1,8 @@
 #pragma once
 #include <atomic>
 #include <string>
-#include <unordered_map>
 #include <vector>
-#include <deque>
+#include <memory>
 
 #include "jengine/basics/Object.hpp"
 #include "jengine/core/Physics.hpp"
@@ -29,7 +28,7 @@ public:
     void queueDeleteObject(Object *object);
 
     void setFPS(float newFPS);
-    void setRootObject(Object *object);
+    void setRootObject(std::unique_ptr<Object> object);
 
 private:
     static Game *instancePtr;
@@ -42,7 +41,7 @@ private:
     Renderer *renderer = nullptr;
     Controls *controls = nullptr;
     Resources *resources = nullptr;
-    Object *rootObject = nullptr;
+    std::unique_ptr<Object> rootObject = nullptr;
 
     std::vector<Object *> toBedeleted = {};
 

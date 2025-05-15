@@ -1,58 +1,44 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 
 class Object
 {
 public:
-    static bool DeleteObject(Object *object);
-
-    std::string name = "";
-
     Object();
+    virtual ~Object();
 
     const std::string &getId() const;
+    const std::string &getName() const { return name; }
+    void setName(const std::string &n) { name = n; }
 
     Object *getParent() const;
 
-    std::vector<Object *> &getChildren();
-
+    std::vector<Object *> getChildren() const;
     Object *getChild(const std::string &childID);
+    Object *getChildByName(const std::string &name);
 
-    Object *getChildByName(const std::string &childName);
-
-    virtual bool addChild(Object *child);
-
+    virtual bool addChild(std::unique_ptr<Object> child);
     bool removeChild(Object *child);
 
     void queueDelete();
 
-    // Don't override, only for internal usage.
     void __input();
-
-    // Don't override, only for internal usage.
     void __update(float dt);
-
-    // Don't override, only for internal usage.
     void __output();
 
-protected:
-    virtual ~Object();
-
-    // This function is called right before the destructor
     virtual void cleanup();
 
+protected:
     virtual void input();
-
     virtual void update(float dt);
-
     virtual void output();
 
 private:
-    std::string id = "";
-
+    std::string id;
+    std::string name;
     Object *parent = nullptr;
-
-    std::vector<Object *> children;
+    std::vector<std::unique_ptr<Object>> children;
 };

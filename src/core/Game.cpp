@@ -48,12 +48,6 @@ Game::~Game()
     Resources::deleteInstance();
     resources = nullptr;
 
-    if (rootObject)
-    {
-        Object::DeleteObject(rootObject);
-        rootObject = nullptr;
-    }
-
     TTF_Quit();
 
     SDL_Quit();
@@ -151,13 +145,13 @@ void Game::update(float dt)
     // Remove queued to be deleted objects
     for (auto object : toBedeleted)
     {
+        object->cleanup();
+
         Object *objectParent = object->getParent();
         if (objectParent != nullptr)
         {
             objectParent->removeChild(object);
         }
-
-        Object::DeleteObject(object);
     }
 
     toBedeleted.clear();
@@ -181,7 +175,7 @@ void Game::setFPS(float newFPS)
     fps = newFPS;
 }
 
-void Game::setRootObject(Object *object)
+void Game::setRootObject(std::unique_ptr<Object> object)
 {
-    rootObject = object;
+    rootObject = std::move(object);
 }

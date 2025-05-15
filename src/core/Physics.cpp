@@ -4,7 +4,7 @@ Physics *Physics::instancePtr = nullptr;
 
 Physics::Physics() : Object()
 {
-    name = "Physics";
+    setName("Physics");
 }
 
 Physics::~Physics() {}

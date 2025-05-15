@@ -56,9 +56,9 @@ void Entity::__update_global_position()
     }
 }
 
-bool Entity::addChild(Object *child)
+bool Entity::addChild(std::unique_ptr<Object> child)
 {
-    if (!Object::addChild(child))
+    if (!Object::addChild(std::move(child)))
     {
         return false;
     }

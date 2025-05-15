@@ -4,7 +4,7 @@ Controls *Controls::instancePtr = nullptr;
 
 Controls::Controls() : Object()
 {
-    name = "Controls";
+    setName("Controls");
 }
 
 Controls::~Controls() {}
