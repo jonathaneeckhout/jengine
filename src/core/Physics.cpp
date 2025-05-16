@@ -4,7 +4,7 @@ Physics *Physics::instancePtr = nullptr;
 
 Physics::Physics() : Object()
 {
-    name = "Physics";
+    setName("Physics");
 }
 
 Physics::~Physics() {}
@@ -27,49 +27,60 @@ void Physics::deleteInstance()
     }
 }
 
-bool Physics::addCollisionShape(CollisionShape &shape)
+bool Physics::addCollisionShape(std::shared_ptr<CollisionShape> &shape)
 {
-    const std::string &id = shape.getId();
-    if (collisionShapes.count(id) > 0)
+    if (!shape)
     {
         return false;
     }
 
-    collisionShapes[id] = &shape;
+    auto id = shape->getId();
+
+    collisionShapes[id] = shape;
+
     return true;
 }
 
-bool Physics::removeCollisionShape(const CollisionShape &shape)
+bool Physics::removeCollisionShape(const std::string &id)
 {
-    const std::string &id = shape.getId();
-
     auto it = collisionShapes.find(id);
-    if (it != collisionShapes.end() && it->second == &shape)
+
+    if (it == collisionShapes.end())
     {
-        collisionShapes.erase(it);
-        return true;
+        return false;
     }
 
-    return false;
+    collisionShapes.erase(it);
+
+    return true;
 }
 
-std::vector<CollisionShape *> Physics::checkCollision(const CollisionShape &shape)
+std::vector<std::weak_ptr<CollisionShape>> Physics::checkCollision(const CollisionShape &shape)
 {
-    std::vector<CollisionShape *> collisions;
+    std::vector<std::weak_ptr<CollisionShape>> collisions;
 
-    for (auto &entry : collisionShapes)
+    for (auto it = collisionShapes.begin(); it != collisionShapes.end();)
     {
-        CollisionShape *other = entry.second;
+        std::shared_ptr<CollisionShape> other = it->second.lock();
 
-        if (other == &shape)
+        if (!other)
         {
+            it = collisionShapes.erase(it);
+            continue;
+        }
+
+        if (other.get() == &shape)
+        {
+            ++it;
             continue;
         }
 
         if (shape.collidesWith(*other))
         {
-            collisions.push_back(other);
+            collisions.push_back(it->second);
         }
+
+        ++it;
     }
 
     return collisions;

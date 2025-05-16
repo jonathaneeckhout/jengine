@@ -11,7 +11,7 @@ Body::~Body() {}
 
 void Body::moveAndSlide(float dt)
 {
-    if (collisionShape == nullptr)
+    if (!collisionShape)
     {
         setPosition(getPosition() + velocity * dt);
 

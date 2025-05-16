@@ -4,7 +4,7 @@ Resources *Resources::instancePtr = nullptr;
 
 Resources::Resources() : Object()
 {
-    name = "Resources";
+    setName("Resources");
 }
 
 Resources::~Resources()

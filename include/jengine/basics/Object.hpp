@@ -1,58 +1,60 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 
-class Object
+class Object : public std::enable_shared_from_this<Object>
 {
 public:
-    static bool DeleteObject(Object *object);
-
-    std::string name = "";
-
     Object();
+    virtual ~Object();
 
     const std::string &getId() const;
+    const std::string &getName() const { return name; }
+    void setName(const std::string &n) { name = n; }
 
-    Object *getParent() const;
+    std::weak_ptr<Object> getParent() const;
 
-    std::vector<Object *> &getChildren();
+    std::vector<std::weak_ptr<Object>> getChildren() const;
+    std::weak_ptr<Object> getChild(const std::string &childID);
+    std::weak_ptr<Object> getChildByName(const std::string &name);
 
-    Object *getChild(const std::string &childID);
-
-    Object *getChildByName(const std::string &childName);
-
-    virtual bool addChild(Object *child);
-
-    bool removeChild(Object *child);
+    virtual bool addChild(std::shared_ptr<Object> child);
+    std::shared_ptr<Object> removeChild(Object *child);
 
     void queueDelete();
 
-    // Don't override, only for internal usage.
+    virtual void __init();
+    virtual void __cleanup();
+
     void __input();
-
-    // Don't override, only for internal usage.
     void __update(float dt);
-
-    // Don't override, only for internal usage.
     void __output();
+    void __checkDeleteObjects();
+    bool __queuedForDeletion();
+
+    static std::shared_ptr<Object> create()
+    {
+        auto obj = std::make_shared<Object>();
+        obj->__init();
+
+        return obj;
+    }
 
 protected:
-    virtual ~Object();
-
-    // This function is called right before the destructor
+    virtual void init();
     virtual void cleanup();
 
     virtual void input();
-
     virtual void update(float dt);
-
     virtual void output();
 
+    std::weak_ptr<Object> parent;
+    std::vector<std::shared_ptr<Object>> children;
+
 private:
-    std::string id = "";
-
-    Object *parent = nullptr;
-
-    std::vector<Object *> children;
+    std::string id;
+    std::string name;
+    bool shouldDelete = false;
 };

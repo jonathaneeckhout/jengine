@@ -4,56 +4,88 @@
 #include "jengine/utils/uuid.hpp"
 #include "jengine/core/Game.hpp"
 
-Object::Object()
-{
-    id = generate_uuid();
-};
+Object::Object() : id(generate_uuid()) {}
 
 Object::~Object()
 {
     for (auto &child : children)
     {
-        DeleteObject(child);
+        if (child)
+        {
+            child->__cleanup();
+        }
     }
 }
 
-bool Object::DeleteObject(Object *object)
+const std::string &Object::getId() const { return id; }
+
+std::weak_ptr<Object> Object::getParent() const { return parent; }
+
+std::vector<std::weak_ptr<Object>> Object::getChildren() const
 {
-    if (object == nullptr)
+    std::vector<std::weak_ptr<Object>> result;
+
+    result.reserve(children.size());
+
+    for (const auto &c : children)
+    {
+        result.push_back(c);
+    }
+
+    return result;
+}
+
+std::weak_ptr<Object> Object::getChild(const std::string &childID)
+{
+    auto it = std::find_if(children.begin(), children.end(), [&](const std::shared_ptr<Object> &entry)
+                           { return entry && entry->getId() == childID; });
+
+    return (it != children.end()) ? *it : std::weak_ptr<Object>{};
+}
+
+std::weak_ptr<Object> Object::getChildByName(const std::string &searchName)
+{
+    for (const auto &child : children)
+    {
+        if (child && child->name == searchName)
+        {
+            return child;
+        }
+    }
+
+    return std::weak_ptr<Object>{};
+}
+
+bool Object::addChild(std::shared_ptr<Object> child)
+{
+    if (!child)
     {
         return false;
     }
 
-    object->cleanup();
+    if (!getChild(child->getId()).expired())
+    {
+        return false;
+    }
 
-    delete object;
+    child->parent = shared_from_this();
+
+    children.push_back(std::move(child));
 
     return true;
 }
 
-void Object::cleanup() {}
-
-const std::string &Object::getId() const
+std::shared_ptr<Object> Object::removeChild(Object *childPtr)
 {
-    return id;
-}
+    if (!childPtr)
+    {
+        return nullptr;
+    }
 
-Object *Object::getParent() const
-{
-    return parent;
-}
-
-std::vector<Object *> &Object::getChildren()
-{
-    return children;
-}
-
-Object *Object::getChild(const std::string &childID)
-{
     auto it = std::find_if(children.begin(), children.end(),
-                           [&](Object *entry)
+                           [&](const std::shared_ptr<Object> &entry)
                            {
-                               return entry && entry->getId() == childID;
+                               return entry.get() == childPtr;
                            });
 
     if (it == children.end())
@@ -61,84 +93,40 @@ Object *Object::getChild(const std::string &childID)
         return nullptr;
     }
 
-    return *it;
-}
+    (*it)->parent.reset();
 
-Object *Object::getChildByName(const std::string &name)
-{
-    for (auto &child : children)
-    {
-        if (child->name == name)
-        {
-            return child;
-        }
-    }
-
-    return nullptr;
-}
-
-bool Object::addChild(Object *child)
-{
-    if (child == nullptr)
-    {
-        return false;
-    }
-
-    if (getChild(child->getId()) != nullptr)
-    {
-        return false;
-    }
-
-    child->parent = this;
-
-    children.push_back(child);
-
-    return true;
-}
-
-bool Object::removeChild(Object *child)
-{
-    if (child == nullptr)
-    {
-        return false;
-    }
-
-    auto it = std::find_if(children.begin(), children.end(),
-                           [&](Object *entry)
-                           {
-                               return entry && entry->getId() == child->getId();
-                           });
-
-    if (it == children.end())
-    {
-        return false;
-    }
-
-    child->parent = nullptr;
+    std::shared_ptr<Object> removedChild = std::move(*it);
 
     children.erase(it);
 
-    return true;
+    return removedChild;
 }
 
 void Object::queueDelete()
 {
-    Game *game = Game::getInstance();
-    if (game == nullptr)
-    {
-        return;
-    }
+    shouldDelete = true;
+}
 
-    game->queueDeleteObject(this);
+void Object::__init()
+{
+    init();
+}
+
+void Object::__cleanup()
+{
+    cleanup();
 }
 
 void Object::__input()
 {
     input();
 
-    for (auto &child : children)
+    for (const auto &child : children)
     {
-        child->__input();
+        if (child)
+        {
+            child->__input();
+        }
     }
 }
 
@@ -146,9 +134,12 @@ void Object::__update(float dt)
 {
     update(dt);
 
-    for (auto &child : children)
+    for (const auto &child : children)
     {
-        child->__update(dt);
+        if (child)
+        {
+            child->__update(dt);
+        }
     }
 }
 
@@ -156,14 +147,42 @@ void Object::__output()
 {
     output();
 
-    for (auto &child : children)
+    for (const auto &child : children)
     {
-        child->__output();
+        if (child)
+        {
+            child->__output();
+        }
     }
 }
 
+void Object::__checkDeleteObjects()
+{
+    for (const auto &child : children)
+    {
+        if (child)
+        {
+            if (child->__queuedForDeletion())
+            {
+                child->__cleanup();
+
+                removeChild(child.get());
+            }
+            else
+            {
+                child->__checkDeleteObjects();
+            }
+        }
+    }
+}
+
+bool Object::__queuedForDeletion()
+{
+    return shouldDelete;
+}
+
+void Object::init() {}
+void Object::cleanup() {}
 void Object::input() {}
-
 void Object::update(float) {}
-
 void Object::output() {}

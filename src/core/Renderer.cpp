@@ -8,7 +8,7 @@ const Vector Renderer::windowSize = {800, 600};
 
 Renderer::Renderer() : Object()
 {
-    name = "Renderer";
+    setName("Renderer");
 
     window = SDL_CreateWindow("JEngine Game",
                               SDL_WINDOWPOS_CENTERED,

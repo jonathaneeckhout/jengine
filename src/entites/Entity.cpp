@@ -38,25 +38,35 @@ void Entity::setGlobalPosition(Vector newPosition)
 
 void Entity::__update_global_position()
 {
-    if (Entity *parentEntity = dynamic_cast<Entity *>(getParent()))
+    if (auto parentShared = parent.lock())
     {
-        globalPosition = parentEntity->globalPosition + position;
+        if (Entity *parentEntity = dynamic_cast<Entity *>(parentShared.get()))
+        {
+            globalPosition = parentEntity->globalPosition + position;
+        }
+        else
+        {
+            globalPosition = position;
+        }
     }
     else
     {
         globalPosition = position;
     }
 
-    for (auto &child : getChildren())
+    for (const auto &child : children)
     {
-        if (Entity *childEntity = dynamic_cast<Entity *>(child))
+        if (!child)
+            continue;
+
+        if (Entity *childEntity = dynamic_cast<Entity *>(child.get()))
         {
             childEntity->__update_global_position();
         }
     }
 }
 
-bool Entity::addChild(Object *child)
+bool Entity::addChild(std::shared_ptr<Object> child)
 {
     if (!Object::addChild(child))
     {

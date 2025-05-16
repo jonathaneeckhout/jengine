@@ -1,9 +1,7 @@
 #pragma once
 #include <atomic>
 #include <string>
-#include <unordered_map>
-#include <vector>
-#include <deque>
+#include <memory>
 
 #include "jengine/basics/Object.hpp"
 #include "jengine/core/Physics.hpp"
@@ -26,10 +24,28 @@ public:
     void run();
     void stop();
 
-    void queueDeleteObject(Object *object);
-
     void setFPS(float newFPS);
-    void setRootObject(Object *object);
+    void setRootObject(std::shared_ptr<Object> object);
+
+    template <typename T, typename... Args>
+    static std::shared_ptr<T> create(Args &&...args)
+    {
+        static_assert(std::is_base_of<Object, T>::value, "T must derive from Object");
+
+        std::shared_ptr<T> obj = std::make_shared<T>(std::forward<Args>(args)...);
+
+        obj->__init();
+
+        return obj;
+    }
+
+    template <typename T>
+    static void destroy(std::shared_ptr<T> obj)
+    {
+        static_assert(std::is_base_of<Object, T>::value, "T must derive from Object");
+
+        obj->__cleanup();
+    }
 
 private:
     static Game *instancePtr;
@@ -42,13 +58,13 @@ private:
     Renderer *renderer = nullptr;
     Controls *controls = nullptr;
     Resources *resources = nullptr;
-    Object *rootObject = nullptr;
 
-    std::vector<Object *> toBedeleted = {};
+    std::shared_ptr<Object> rootObject = nullptr;
 
     Game();
 
     void input();
     void update(float dt);
     void output();
+    void checkDeleteObjects();
 };

@@ -48,12 +48,6 @@ Game::~Game()
     Resources::deleteInstance();
     resources = nullptr;
 
-    if (rootObject)
-    {
-        Object::DeleteObject(rootObject);
-        rootObject = nullptr;
-    }
-
     TTF_Quit();
 
     SDL_Quit();
@@ -99,6 +93,8 @@ void Game::run()
 
         output();
 
+        checkDeleteObjects();
+
         auto frameEnd = std::chrono::high_resolution_clock::now();
 
         auto elapsed = frameEnd - frameStart;
@@ -113,22 +109,6 @@ void Game::run()
 void Game::stop()
 {
     running = false;
-}
-
-void Game::queueDeleteObject(Object *object)
-{
-    if (object == nullptr)
-    {
-        return;
-    }
-
-    auto it = std::find(toBedeleted.begin(), toBedeleted.end(), object);
-    if (it != toBedeleted.end())
-    {
-        return;
-    }
-
-    toBedeleted.push_back(object);
 }
 
 void Game::input()
@@ -147,20 +127,6 @@ void Game::update(float dt)
     controls->__update(dt);
     resources->__update(dt);
     rootObject->__update(dt);
-
-    // Remove queued to be deleted objects
-    for (auto object : toBedeleted)
-    {
-        Object *objectParent = object->getParent();
-        if (objectParent != nullptr)
-        {
-            objectParent->removeChild(object);
-        }
-
-        Object::DeleteObject(object);
-    }
-
-    toBedeleted.clear();
 }
 
 void Game::output()
@@ -176,12 +142,17 @@ void Game::output()
     renderer->present();
 }
 
+void Game::checkDeleteObjects()
+{
+    rootObject->__checkDeleteObjects();
+}
+
 void Game::setFPS(float newFPS)
 {
     fps = newFPS;
 }
 
-void Game::setRootObject(Object *object)
+void Game::setRootObject(std::shared_ptr<Object> object)
 {
     rootObject = object;
 }
