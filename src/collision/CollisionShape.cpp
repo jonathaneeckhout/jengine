@@ -1,8 +1,6 @@
 #include "jengine/collision/CollisionShape.hpp"
 #include "jengine/core/Physics.hpp"
 
-#include <iostream>
-
 CollisionShape::CollisionShape(Vector position) : Entity(position) {}
 
 CollisionShape::~CollisionShape() {}
@@ -16,6 +14,8 @@ void CollisionShape::__init()
     {
         physics->addCollisionShape(self);
     }
+
+    Entity::__init();
 }
 
 void CollisionShape::__cleanup()
@@ -31,6 +31,8 @@ void CollisionShape::__cleanup()
             col->removeCollider(this);
         }
     }
+
+    Entity::__cleanup();
 
     triggerEndHandlers(colliders);
 }

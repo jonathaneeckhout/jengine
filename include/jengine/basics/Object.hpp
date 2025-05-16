@@ -34,7 +34,18 @@ public:
     void __checkDeleteObjects();
     bool __queuedForDeletion();
 
+    static std::shared_ptr<Object> create()
+    {
+        auto obj = std::make_shared<Object>();
+        obj->__init();
+
+        return obj;
+    }
+
 protected:
+    virtual void init();
+    virtual void cleanup();
+
     virtual void input();
     virtual void update(float dt);
     virtual void output();

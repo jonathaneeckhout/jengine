@@ -27,6 +27,26 @@ public:
     void setFPS(float newFPS);
     void setRootObject(std::shared_ptr<Object> object);
 
+    template <typename T, typename... Args>
+    static std::shared_ptr<T> create(Args &&...args)
+    {
+        static_assert(std::is_base_of<Object, T>::value, "T must derive from Object");
+
+        std::shared_ptr<T> obj = std::make_shared<T>(std::forward<Args>(args)...);
+
+        obj->__init();
+
+        return obj;
+    }
+
+    template <typename T>
+    static void destroy(std::shared_ptr<T> obj)
+    {
+        static_assert(std::is_base_of<Object, T>::value, "T must derive from Object");
+
+        obj->__cleanup();
+    }
+
 private:
     static Game *instancePtr;
 

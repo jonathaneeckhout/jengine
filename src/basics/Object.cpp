@@ -107,9 +107,15 @@ void Object::queueDelete()
     shouldDelete = true;
 }
 
-void Object::__init() {}
+void Object::__init()
+{
+    init();
+}
 
-void Object::__cleanup() {}
+void Object::__cleanup()
+{
+    cleanup();
+}
 
 void Object::__input()
 {
@@ -156,9 +162,14 @@ void Object::__checkDeleteObjects()
     {
         if (child)
         {
-            if (child->__queuedForDeletion()) {
+            if (child->__queuedForDeletion())
+            {
+                child->__cleanup();
+
                 removeChild(child.get());
-            } else {
+            }
+            else
+            {
                 child->__checkDeleteObjects();
             }
         }
@@ -170,6 +181,8 @@ bool Object::__queuedForDeletion()
     return shouldDelete;
 }
 
+void Object::init() {}
+void Object::cleanup() {}
 void Object::input() {}
 void Object::update(float) {}
 void Object::output() {}

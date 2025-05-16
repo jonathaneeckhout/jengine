@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "jengine/systems/Timer.hpp"
 
 Timer::Timer(float timeout) : timeout(timeout) {};
