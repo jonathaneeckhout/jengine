@@ -47,6 +47,13 @@ public:
         obj->__cleanup();
     }
 
+    template <typename T>
+    static std::shared_ptr<T> safeCast(const std::weak_ptr<Object> &weak)
+    {
+        auto sp = weak.lock();
+        return std::dynamic_pointer_cast<T>(sp);
+    }
+
 private:
     static Game *instancePtr;
 
