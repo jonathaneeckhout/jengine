@@ -28,6 +28,11 @@ public:
     virtual void __init();
     virtual void __cleanup();
 
+    virtual void __addToGame();
+    virtual void __removeFromGame();
+
+    bool isPartOfGame() { return partOfGame; };
+
     void __input();
     void __update(float dt);
     void __output();
@@ -56,5 +61,6 @@ protected:
 private:
     std::string id;
     std::string name;
+    bool partOfGame = false;
     bool shouldDelete = false;
 };

@@ -147,3 +147,51 @@ TEST(ObjectTest, CheckDeleteCleansUpAndRemovesChild)
     parent->__checkDeleteObjects();
     EXPECT_EQ(parent->getChildren().size(), 0);
 }
+
+TEST(ObjectTest, AddToGameSetsFlag)
+{
+    Object obj;
+    EXPECT_FALSE(obj.isPartOfGame());
+
+    obj.__addToGame();
+
+    EXPECT_TRUE(obj.isPartOfGame());
+}
+
+TEST(ObjectTest, RemoveFromGameUnsetsFlag)
+{
+    Object obj;
+    obj.__addToGame();
+    ASSERT_TRUE(obj.isPartOfGame());
+
+    obj.__removeFromGame();
+
+    EXPECT_FALSE(obj.isPartOfGame());
+}
+
+TEST(ObjectTest, AddToGamePropagatesToChildren)
+{
+    auto parent = std::make_shared<Object>();
+    auto child = std::make_shared<Object>();
+
+    parent->addChild(child);
+
+    parent->__addToGame();
+
+    EXPECT_TRUE(parent->isPartOfGame());
+    EXPECT_TRUE(child->isPartOfGame());
+}
+
+TEST(ObjectTest, RemoveFromGamePropagatesToChildren)
+{
+    auto parent = std::make_shared<Object>();
+    auto child = std::make_shared<Object>();
+
+    parent->addChild(child);
+    parent->__addToGame();
+
+    parent->__removeFromGame();
+
+    EXPECT_FALSE(parent->isPartOfGame());
+    EXPECT_FALSE(child->isPartOfGame());
+}

@@ -170,4 +170,5 @@ float Game::getFPS()
 void Game::setRootObject(std::shared_ptr<Object> object)
 {
     rootObject = object;
+    rootObject->__addToGame();
 }

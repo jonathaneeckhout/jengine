@@ -31,8 +31,8 @@ public:
 
     void update(float dt) override;
 
-    void __init() override;
-    void __cleanup() override;
+    virtual void __addToGame() override;
+    virtual void __removeFromGame() override;
 
     virtual Vector getCollisionNormal(const CollisionShape &other) const = 0;
     virtual Vector getCollisionNormalSquare(const class CollisionShapeSquare &square) const = 0;

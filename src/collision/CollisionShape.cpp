@@ -5,8 +5,10 @@ CollisionShape::CollisionShape(Vector position) : Entity(position) {}
 
 CollisionShape::~CollisionShape() {}
 
-void CollisionShape::__init()
+void CollisionShape::__addToGame()
 {
+    Entity::__addToGame();
+
     Physics *physics = Physics::getInstance();
 
     std::shared_ptr<CollisionShape> self = std::dynamic_pointer_cast<CollisionShape>(shared_from_this());
@@ -14,11 +16,9 @@ void CollisionShape::__init()
     {
         physics->addCollisionShape(self);
     }
-
-    Entity::__init();
 }
 
-void CollisionShape::__cleanup()
+void CollisionShape::__removeFromGame()
 {
     Physics *physics = Physics::getInstance();
 
@@ -32,7 +32,7 @@ void CollisionShape::__cleanup()
         }
     }
 
-    Entity::__cleanup();
+    Entity::__removeFromGame();
 
     triggerEndHandlers(colliders);
 }

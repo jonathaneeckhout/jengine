@@ -70,6 +70,11 @@ bool Object::addChild(std::shared_ptr<Object> child)
 
     child->parent = shared_from_this();
 
+    if (isPartOfGame())
+    {
+        child->__addToGame();
+    }
+
     children.push_back(std::move(child));
 
     return true;
@@ -95,6 +100,8 @@ std::shared_ptr<Object> Object::removeChild(Object *childPtr)
 
     (*it)->parent.reset();
 
+    (*it)->__removeFromGame();
+
     std::shared_ptr<Object> removedChild = std::move(*it);
 
     children.erase(it);
@@ -115,6 +122,26 @@ void Object::__init()
 void Object::__cleanup()
 {
     cleanup();
+}
+
+void Object::__addToGame()
+{
+    partOfGame = true;
+
+    for (const auto &child : children)
+    {
+        child->__addToGame();
+    }
+}
+
+void Object::__removeFromGame()
+{
+    partOfGame = false;
+
+    for (const auto &child : children)
+    {
+        child->__removeFromGame();
+    }
 }
 
 void Object::__input()
