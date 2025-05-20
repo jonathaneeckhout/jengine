@@ -4,7 +4,8 @@
 
 #include "jengine/basics/Object.hpp"
 
-class TestableObject : public Object {
+class TestableObject : public Object
+{
 public:
     bool initialized = false;
     bool cleanedUp = false;
@@ -13,13 +14,15 @@ public:
 
     void init() override { initialized = true; }
     void cleanup() override { cleanedUp = true; }
-    void update(float dt) override {
+    void update(float dt) override
+    {
         updated = true;
         lastDelta = dt;
     }
 };
 
-TEST(ObjectTest, GeneratesUniqueId) {
+TEST(ObjectTest, GeneratesUniqueId)
+{
     auto obj1 = std::make_shared<Object>();
     auto obj2 = std::make_shared<Object>();
 
@@ -28,7 +31,8 @@ TEST(ObjectTest, GeneratesUniqueId) {
     EXPECT_NE(obj1->getId(), obj2->getId());
 }
 
-TEST(ObjectTest, AddChildSetsParent) {
+TEST(ObjectTest, AddChildSetsParent)
+{
     auto parent = std::make_shared<Object>();
     auto child = std::make_shared<Object>();
 
@@ -37,7 +41,8 @@ TEST(ObjectTest, AddChildSetsParent) {
     EXPECT_EQ(parent->getChildren().size(), 1);
 }
 
-TEST(ObjectTest, AddDuplicateChildFails) {
+TEST(ObjectTest, AddDuplicateChildFails)
+{
     auto parent = std::make_shared<Object>();
     auto child = std::make_shared<Object>();
 
@@ -45,19 +50,29 @@ TEST(ObjectTest, AddDuplicateChildFails) {
     EXPECT_FALSE(parent->addChild(child));
 }
 
-TEST(ObjectTest, RemoveChildWorksCorrectly) {
+TEST(ObjectTest, RemoveChildWorksCorrectly)
+{
     auto parent = std::make_shared<Object>();
+    // First reference to child
     auto child = std::make_shared<Object>();
 
+    // Second reference to child (inside parent children list)
     parent->addChild(child);
+    EXPECT_EQ(child.use_count(), 2);
+
+    // Second reference passed from parent to removed
     auto removed = parent->removeChild(child.get());
 
     EXPECT_EQ(removed, child);
     EXPECT_EQ(parent->getChildren().size(), 0);
     EXPECT_TRUE(child->getParent().expired());
+
+    // There should be only 2 references
+    EXPECT_EQ(child.use_count(), 2);
 }
 
-TEST(ObjectTest, GetChildById) {
+TEST(ObjectTest, GetChildById)
+{
     auto parent = std::make_shared<Object>();
     auto child = std::make_shared<Object>();
 
@@ -67,7 +82,8 @@ TEST(ObjectTest, GetChildById) {
     EXPECT_EQ(retrieved, child);
 }
 
-TEST(ObjectTest, GetChildByName) {
+TEST(ObjectTest, GetChildByName)
+{
     auto parent = std::make_shared<Object>();
     auto child = std::make_shared<Object>();
     child->setName("Hero");
@@ -78,7 +94,20 @@ TEST(ObjectTest, GetChildByName) {
     EXPECT_EQ(retrieved, child);
 }
 
-TEST(ObjectTest, QueueDeleteMarksObjectForDeletion) {
+TEST(ObjectTest, GetChildByNonExistingName)
+{
+    auto parent = std::make_shared<Object>();
+    auto child = std::make_shared<Object>();
+    child->setName("Hero");
+
+    parent->addChild(child);
+    auto retrieved = parent->getChildByName("NotYourHero").lock();
+
+    EXPECT_EQ(retrieved, nullptr);
+}
+
+TEST(ObjectTest, QueueDeleteMarksObjectForDeletion)
+{
     auto obj = std::make_shared<Object>();
     EXPECT_FALSE(obj->__queuedForDeletion());
 
@@ -86,7 +115,8 @@ TEST(ObjectTest, QueueDeleteMarksObjectForDeletion) {
     EXPECT_TRUE(obj->__queuedForDeletion());
 }
 
-TEST(ObjectTest, InitAndCleanupCalled) {
+TEST(ObjectTest, InitAndCleanupCalled)
+{
     auto obj = std::make_shared<TestableObject>();
 
     obj->__init();
@@ -96,7 +126,8 @@ TEST(ObjectTest, InitAndCleanupCalled) {
     EXPECT_TRUE(obj->cleanedUp);
 }
 
-TEST(ObjectTest, UpdateCalledWithDeltaTime) {
+TEST(ObjectTest, UpdateCalledWithDeltaTime)
+{
     auto obj = std::make_shared<TestableObject>();
 
     obj->__update(0.16f);
@@ -104,7 +135,8 @@ TEST(ObjectTest, UpdateCalledWithDeltaTime) {
     EXPECT_FLOAT_EQ(obj->lastDelta, 0.16f);
 }
 
-TEST(ObjectTest, CheckDeleteCleansUpAndRemovesChild) {
+TEST(ObjectTest, CheckDeleteCleansUpAndRemovesChild)
+{
     auto parent = std::make_shared<Object>();
     auto child = std::make_shared<TestableObject>();
 

@@ -24,7 +24,11 @@ public:
     void run();
     void stop();
 
+    // Don't call this function directly. It's exposed for unit test access.
+    void __tick(float dt);
+
     void setFPS(float newFPS);
+    float getFPS();
     void setRootObject(std::shared_ptr<Object> object);
 
     template <typename T, typename... Args>
@@ -58,6 +62,7 @@ private:
     static Game *instancePtr;
 
     float fps = 30.0f;
+    float actualFPS = 30.f;
 
     std::atomic<bool> running;
 

@@ -87,13 +87,7 @@ void Game::run()
     {
         auto frameStart = std::chrono::high_resolution_clock::now();
 
-        input();
-
-        update(frameDuration.count());
-
-        output();
-
-        checkDeleteObjects();
+        __tick(frameDuration.count());
 
         auto frameEnd = std::chrono::high_resolution_clock::now();
 
@@ -103,7 +97,23 @@ void Game::run()
         {
             std::this_thread::sleep_for(frameDuration - elapsed);
         }
+
+        auto tickEnd = std::chrono::high_resolution_clock::now();
+
+        auto duration = std::chrono::duration<float>(tickEnd - frameStart); // duration in seconds (float)
+        actualFPS = 1.0f / duration.count();
     }
+}
+
+void Game::__tick(float dt)
+{
+    input();
+
+    update(dt);
+
+    output();
+
+    checkDeleteObjects();
 }
 
 void Game::stop()
@@ -150,6 +160,11 @@ void Game::checkDeleteObjects()
 void Game::setFPS(float newFPS)
 {
     fps = newFPS;
+}
+
+float Game::getFPS()
+{
+    return actualFPS;
 }
 
 void Game::setRootObject(std::shared_ptr<Object> object)
