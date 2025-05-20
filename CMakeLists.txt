@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(JEngine VERSION 1.0 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(BUILD_TESTING "Enable building tests" ON)
 
 # Use clang++ and set flags
 set(CMAKE_CXX_COMPILER clang++)
@@ -83,3 +84,11 @@ configure_file(
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
 )
+
+# ----------------------------
+# Add tests
+# ----------------------------
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

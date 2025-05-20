@@ -8,7 +8,15 @@ A small 2D c++ game engine used for learning purposes.
 - CMake ≥ 3.16
 - C++17 compiler (`clang++`)
 - Make (optional, but recommended for Unix-like systems)
+- libsdl2-dev
 
+Example using Ubuntu
+```bash
+sudo apt install clang
+sudo snap install cmake --classic
+sudo apt install libsdl2-dev
+sudo apt-get install libgtest-dev
+```
 
 ## Build instructions
 
