@@ -10,12 +10,12 @@ Game *Game::instancePtr = nullptr;
 
 Game::Game() : running(false)
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (!SDL_Init(SDL_INIT_VIDEO))
     {
         throw std::runtime_error("Failed to initialize SDL");
     }
 
-    if (TTF_Init() < 0)
+    if (!TTF_Init())
     {
         throw std::runtime_error("Failed to initialize TFF");
     }
