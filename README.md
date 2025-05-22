@@ -7,15 +7,11 @@ A small 2D c++ game engine used for learning purposes.
 
 - CMake ≥ 3.16
 - C++17 compiler (`clang++`)
-- Make (optional, but recommended for Unix-like systems)
-- libsdl2-dev
 
 Example using Ubuntu
 ```bash
 sudo apt install clang
 sudo snap install cmake --classic
-sudo apt install libsdl2-dev
-sudo apt-get install libgtest-dev
 ```
 
 ## Build instructions
@@ -35,28 +31,3 @@ Build the library
 ``` bash
 cmake --build build
 ```
-
-Install the library (default to /usr/local)
-``` bash
-sudo cmake --install build
-```
-
-To install elsewhere
-```bash
-sudo cmake --install build --prefix /your/custom/path
-```
-
-To remove installed files
-
-```bash
-sudo cmake --build build --target uninstall
-```
-
-## Usage in other projects
-To use JEngine in another CMake project
-```cmake
-find_package(JEngine REQUIRED)
-
-target_link_libraries(MyApp PRIVATE JEngine::JEngine)
-```
-Make sure lib/cmake/JEngine is discoverable via CMAKE_PREFIX_PATH.

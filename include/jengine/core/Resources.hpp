@@ -2,14 +2,14 @@
 
 #include <string>
 #include <map>
-#include <SDL2/SDL_ttf.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "jengine/basics/Object.hpp"
 
 class Resources : public Object
 {
 public:
-    std::map<std::string, SDL_RWops *> fonts;
+    std::map<std::string, SDL_IOStream *> fonts;
 
     ~Resources();
 

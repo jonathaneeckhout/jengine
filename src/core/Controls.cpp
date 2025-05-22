@@ -34,31 +34,31 @@ void Controls::input()
     {
         switch (event.type)
         {
-        case SDL_QUIT:
+        case SDL_EVENT_QUIT:
             if (onStop != nullptr)
             {
                 onStop();
             }
             break;
-        case SDL_KEYDOWN:
+        case SDL_EVENT_KEY_DOWN:
         {
-            SDL_Keycode keycode = event.key.keysym.sym;
+            SDL_Keycode keycode = event.key.key;
 
             std::string keyName = SDL_GetKeyName(keycode);
 
             invokeKeyHandlers(keyPressHandlers, keyName);
         }
         break;
-        case SDL_KEYUP:
+        case SDL_EVENT_KEY_UP:
         {
-            SDL_Keycode keycode = event.key.keysym.sym;
+            SDL_Keycode keycode = event.key.key;
 
             std::string keyName = SDL_GetKeyName(keycode);
 
             invokeKeyHandlers(keyReleaseHandlers, keyName);
         }
         break;
-        case SDL_MOUSEBUTTONDOWN:
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
             switch (event.button.button)
             {
             case SDL_BUTTON_LEFT:
@@ -74,7 +74,7 @@ void Controls::input()
                 break;
             }
             break;
-        case SDL_MOUSEBUTTONUP:
+        case SDL_EVENT_MOUSE_BUTTON_UP:
             switch (event.button.button)
             {
             case SDL_BUTTON_LEFT:
@@ -90,7 +90,7 @@ void Controls::input()
                 break;
             }
             break;
-        case SDL_MOUSEMOTION:
+        case SDL_EVENT_MOUSE_MOTION:
             invokeMouseHandlers(mouseMovementHandlers, Vector{float(event.motion.x), float(event.motion.y)});
             break;
         default:

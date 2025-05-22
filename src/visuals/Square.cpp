@@ -17,7 +17,7 @@ void Square::output()
 
     Vector globalPosition = getGlobalPosition();
 
-    SDL_Rect square = {static_cast<int>(globalPosition.x), static_cast<int>(globalPosition.y), width, height};
+    SDL_FRect square = {globalPosition.x, globalPosition.y, static_cast<float>(width), static_cast<float>(height)};
 
     SDL_SetRenderDrawColor(renderer->renderer, color.r, color.g, color.b, color.a);
 

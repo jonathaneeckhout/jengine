@@ -34,13 +34,13 @@ void Resources::cleanFonts()
 {
     for (auto &font : fonts)
     {
-        SDL_RWclose(font.second);
+        SDL_CloseIO(font.second);
     }
 }
 
 bool Resources::loadFont(const std::string &name, unsigned char *font, unsigned int size)
 {
-    SDL_RWops *newFont = SDL_RWFromConstMem(font, size);
+    SDL_IOStream *newFont = SDL_IOFromConstMem(font, size);
     if (newFont == nullptr)
     {
         return false;

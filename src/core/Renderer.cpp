@@ -11,17 +11,16 @@ Renderer::Renderer() : Object()
     setName("Renderer");
 
     window = SDL_CreateWindow("JEngine Game",
-                              SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED,
-                              int(windowSize.x), int(windowSize.y),
-                              SDL_WINDOW_SHOWN);
+                              int(windowSize.x),
+                               int(windowSize.y),
+                              SDL_WINDOW_HIGH_PIXEL_DENSITY);
 
     if (!window)
     {
         throw std::runtime_error("Failed to create window");
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, NULL);
     if (!renderer)
     {
         throw std::runtime_error("Failed to create renderer");

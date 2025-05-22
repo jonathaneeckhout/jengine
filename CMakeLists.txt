@@ -1,94 +1,45 @@
-cmake_minimum_required(VERSION 3.16)
-project(JEngine VERSION 1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.20)
+project(JEngine LANGUAGES CXX)
 
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-option(BUILD_TESTING "Enable building tests" ON)
-
-# Use clang++ and set flags
-set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 
-# Find SDL2
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+set(BUILD_SHARED_LIBS OFF)
 
-# Find SDL2_ttf
-find_package(SDL2_ttf REQUIRED)
-include_directories(${SDL2_TTF_INCLUDE_DIRS})
+include(FetchContent)
+
+FetchContent_Declare(
+    SDL
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-3.2.14
+)
+
+FetchContent_MakeAvailable(SDL)
+
+FetchContent_Declare(
+    SDL_ttf
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
+    GIT_TAG release-3.2.2
+)
+
+FetchContent_MakeAvailable(SDL_ttf)
 
 # Source files
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-# Create library target
+# # Create library target
 add_library(JEngine ${SOURCES})
 
-# Public include directories (for consumers)
-target_include_directories(JEngine
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+target_include_directories(JEngine PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(JEngine
-    ${SDL2_LIBRARIES}
-    ${SDL2_TTF_LIBRARIES}
+target_link_libraries(JEngine PUBLIC
+    SDL3::SDL3-static
+    SDL3_ttf::SDL3_ttf-static
 )
 
-# Install library
-install(TARGETS JEngine
-    EXPORT JEngineTargets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-)
-
-# Install public headers
-install(DIRECTORY include/ DESTINATION include)
-
-# Export targets
-install(EXPORT JEngineTargets
-    FILE JEngineTargets.cmake
-    NAMESPACE JEngine::
-    DESTINATION lib/cmake/JEngine
-)
-
-# Generate config files
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/JEngineConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-
-configure_package_config_file(
-    "${CMAKE_CURRENT_LIST_DIR}/cmake/JEngineConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/JEngineConfig.cmake"
-    INSTALL_DESTINATION lib/cmake/JEngine
-)
-
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/JEngineConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/JEngineConfigVersion.cmake"
-    DESTINATION lib/cmake/JEngine
-)
-
-# Add uninstall target
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY
-)
-
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-)
-
-# ----------------------------
-# Add tests
-# ----------------------------
-if(BUILD_TESTING)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+enable_testing()
+add_subdirectory(tests)
