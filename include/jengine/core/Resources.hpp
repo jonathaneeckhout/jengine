@@ -2,15 +2,13 @@
 
 #include <string>
 #include <unordered_map>
-#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3/SDL.h>
 
 #include "jengine/basics/Object.hpp"
 
 class Resources : public Object
 {
 public:
-    std::unordered_map<std::string, std::vector<unsigned char>> fonts;
-
     ~Resources();
 
     Resources(const Resources &) = delete;
@@ -18,10 +16,14 @@ public:
     static Resources *getInstance();
     static void deleteInstance();
 
-    bool loadFont(const std::string &name, unsigned char *font, unsigned int size);
+    bool loadResource(const std::string &name, unsigned char *data, size_t size);
+
+    SDL_IOStream *getResource(const std::string &name);
 
 private:
     static Resources *instancePtr;
+
+    std::unordered_map<std::string, SDL_IOStream *> resources;
 
     Resources();
 };

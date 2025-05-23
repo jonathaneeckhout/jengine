@@ -36,6 +36,9 @@ Game::Game() : running(false)
 
 Game::~Game()
 {
+    // This line will call the destructors of all objects as this is the main reference to all objects.
+    rootObject = nullptr;
+
     Physics::deleteInstance();
     phyics = nullptr;
 

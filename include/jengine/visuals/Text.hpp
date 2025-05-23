@@ -8,14 +8,12 @@
 class Text : public Visual
 {
 public:
-    std::string text = "";
-
-    unsigned int size = 16;
-
-    bool centered = false;
-    Text(Vector position, const std::string &text, const std::string &fontName, unsigned int size);
+    Text(Vector position, const std::string &text, unsigned int size, const std::string &resourceName);
     ~Text();
 
+    void output() override;
+
+    void setText(const std::string &text);
 
 protected:
     TTF_Font *font = nullptr;
@@ -23,6 +21,4 @@ protected:
     SDL_Surface *surface = nullptr;
 
     SDL_Texture *texture = nullptr;
-
-    bool setFont(const std::string &name, unsigned int size);
 };

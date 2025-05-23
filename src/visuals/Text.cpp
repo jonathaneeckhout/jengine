@@ -1,73 +1,87 @@
+#include <SDL3_ttf/SDL_ttf.h>
+
 #include "jengine/visuals/Text.hpp"
 #include "jengine/core/Resources.hpp"
 #include "jengine/core/Renderer.hpp"
 
-Text::Text(Vector position, const std::string &text, const std::string &fontName, unsigned int size)
-    : Visual(position), text(text), font(nullptr), surface(nullptr), texture(nullptr)
+Text::Text(Vector position, const std::string &text, unsigned int size, const std::string &resourceName) : Visual(position)
 {
-    setFont(fontName, size);
+    auto resources = Resources::getInstance();
+
+    auto fontIO = resources->getResource(resourceName);
+    if (fontIO == nullptr)
+    {
+        return;
+    }
+
+    font = TTF_OpenFontIO(fontIO, false, size);
+    if (font == NULL)
+    {
+        font = nullptr;
+        return;
+    }
+
+    setText(text);
 }
 
 Text::~Text()
 {
-    if (font)
+    if (font != nullptr)
     {
         TTF_CloseFont(font);
         font = nullptr;
     }
-    if (surface)
+    if (surface != nullptr)
     {
         SDL_DestroySurface(surface);
         surface = nullptr;
     }
-    if (texture)
+    if (texture != nullptr)
     {
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
 }
 
-bool Text::setFont(const std::string &name, unsigned int size)
+void Text::output()
 {
-    auto &fonts = Resources::getInstance()->fonts;
-    auto it = fonts.find(name);
-    if (it == fonts.end())
-    {
-        return false;
-    }
+    Renderer *renderer = Renderer::getInstance();
 
-    if (surface)
+    Vector position = getGlobalPosition();
+
+    SDL_FRect rect = {position.x, position.y, float(surface->w), float(surface->h)};
+    SDL_RenderTexture(renderer->renderer, texture, NULL, &rect);
+}
+
+void Text::setText(const std::string &text)
+{
+    if (surface != nullptr)
     {
         SDL_DestroySurface(surface);
         surface = nullptr;
     }
-    if (texture)
+
+    if (texture != nullptr)
     {
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
 
-    const auto &fontData = it->second;
-    SDL_IOStream *stream = SDL_IOFromConstMem(fontData.data(), fontData.size());
-    if (!stream)
-    {
-        return false;
-    }
-
-    font = TTF_OpenFontIO(stream, 1, size); // SDL_ttf takes ownership of stream
-    if (!font)
-    {
-        font = nullptr;
-        return false;
-    }
-
-    surface = TTF_RenderText_Solid_Wrapped(font, text.c_str(), text.length(), color, 6);
-    if (!surface)
+    surface = TTF_RenderText_Blended(font, text.c_str(), text.length(), color);
+    if (surface == NULL)
     {
         surface = nullptr;
-        return false;
+        return;
     }
 
     texture = SDL_CreateTextureFromSurface(Renderer::getInstance()->renderer, surface);
-    return texture != nullptr;
+    if (texture == NULL)
+    {
+        texture = nullptr;
+
+        SDL_DestroySurface(surface);
+        surface = nullptr;
+
+        return;
+    }
 }

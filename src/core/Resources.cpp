@@ -7,7 +7,13 @@ Resources::Resources() : Object()
     setName("Resources");
 }
 
-Resources::~Resources() {}
+Resources::~Resources()
+{
+    for (auto &resource : resources)
+    {
+        SDL_CloseIO(resource.second);
+    }
+}
 
 Resources *Resources::getInstance()
 {
@@ -27,8 +33,27 @@ void Resources::deleteInstance()
     }
 }
 
-bool Resources::loadFont(const std::string &name, unsigned char *font, unsigned int size)
+bool Resources::loadResource(const std::string &name, unsigned char *data, size_t size)
 {
-    fonts[name] = std::vector<unsigned char>(font, font + size);
+    SDL_IOStream *io = SDL_IOFromConstMem(data, size);
+    if (io == NULL)
+    {
+        return false;
+    }
+
+    resources[name] = io;
+
     return true;
+}
+
+SDL_IOStream *Resources::getResource(const std::string &name)
+{
+    auto it = resources.find(name);
+
+    if (it != resources.end())
+    {
+        return it->second;
+    }
+
+    return nullptr;
 }
