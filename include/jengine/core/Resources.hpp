@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include "jengine/basics/Object.hpp"
@@ -9,7 +9,7 @@
 class Resources : public Object
 {
 public:
-    std::map<std::string, SDL_IOStream *> fonts;
+    std::unordered_map<std::string, std::vector<unsigned char>> fonts;
 
     ~Resources();
 
@@ -24,6 +24,4 @@ private:
     static Resources *instancePtr;
 
     Resources();
-
-    void cleanFonts();
 };

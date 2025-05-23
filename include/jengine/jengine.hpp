@@ -15,6 +15,8 @@
 
 #include <jengine/visuals/Visual.hpp>
 #include <jengine/visuals/Square.hpp>
+#include <jengine/visuals/Text.hpp>
+#include <jengine/visuals/Label.hpp>
 
 #include <jengine/systems/Timer.hpp>
 
