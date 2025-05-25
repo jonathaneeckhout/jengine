@@ -10,7 +10,7 @@ Game *Game::instancePtr = nullptr;
 
 Game::Game() : running(false)
 {
-    if (!SDL_Init(SDL_INIT_VIDEO))
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
     {
         throw std::runtime_error("Failed to initialize SDL");
     }
@@ -23,6 +23,8 @@ Game::Game() : running(false)
     phyics = Physics::getInstance();
 
     renderer = Renderer::getInstance();
+
+    mixer = Mixer::getInstance();
 
     controls = Controls::getInstance();
 
@@ -44,6 +46,9 @@ Game::~Game()
 
     Renderer::deleteInstance();
     renderer = nullptr;
+
+    Mixer::deleteInstance();
+    mixer = nullptr;
 
     Controls::deleteInstance();
     controls = nullptr;

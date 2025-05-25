@@ -3,6 +3,7 @@
 #include <jengine/core/Controls.hpp>
 #include <jengine/core/Game.hpp>
 #include <jengine/core/Renderer.hpp>
+#include <jengine/core/Mixer.hpp>
 #include <jengine/core/Resources.hpp>
 
 #include <jengine/basics/Object.hpp>

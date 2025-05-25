@@ -6,6 +6,7 @@
 #include "jengine/basics/Object.hpp"
 #include "jengine/core/Physics.hpp"
 #include "jengine/core/Renderer.hpp"
+#include "jengine/core/Mixer.hpp"
 #include "jengine/core/Controls.hpp"
 #include "jengine/core/Resources.hpp"
 
@@ -68,6 +69,7 @@ private:
 
     Physics *phyics = nullptr;
     Renderer *renderer = nullptr;
+    Mixer *mixer = nullptr;
     Controls *controls = nullptr;
     Resources *resources = nullptr;
 
