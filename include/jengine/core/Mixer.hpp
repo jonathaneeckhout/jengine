@@ -19,13 +19,24 @@ public:
     static Mixer *getInstance();
     static void deleteInstance();
 
-    bool loadSound(const std::string &soundName, const std::string &soundFile);
+    bool loadSound(const std::string &soundName, const std::string &resourceName);
+    bool loadSound(const std::string &soundName, const std::string &resourceName, float volume);
+
     bool playSound(const std::string &soundName);
+
+    void setMasterVolume(int volume);
+    void mute();
+    void unMute();
+
+    bool isMuted();
 
 private:
     static Mixer *instancePtr;
 
     std::unordered_map<std::string, Mix_Chunk *> sounds;
+
+    int masterVolume = MIX_MAX_VOLUME;
+    bool muted = false;
 
     Mixer();
 };

@@ -18,7 +18,7 @@ sudo snap install cmake --classic
 
 Fetch the sources
 ```bash
-git clone https://github.com/yourname/jengine.git
+git clone https://github.com/jonathaneeckhout/jengine.git
 cd jengine
 ```
 

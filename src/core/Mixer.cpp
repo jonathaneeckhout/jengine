@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "jengine/core/Mixer.hpp"
+#include "jengine/core/Resources.hpp"
 
 Mixer *Mixer::instancePtr = nullptr;
 
@@ -45,13 +46,40 @@ void Mixer::deleteInstance()
     }
 }
 
-bool Mixer::loadSound(const std::string &soundName, const std::string &soundFile)
+bool Mixer::loadSound(const std::string &soundName, const std::string &resourceName)
 {
-    auto sound = Mix_LoadWAV(soundFile.c_str());
+    auto resource = Resources::getInstance()->getResource(resourceName);
+    if (resource == nullptr)
+    {
+        return false;
+    }
+
+    auto sound = Mix_LoadWAV_IO(resource, 0);
     if (sound == NULL)
     {
         return false;
     }
+
+    sounds[soundName] = sound;
+
+    return true;
+}
+
+bool Mixer::loadSound(const std::string &soundName, const std::string &resourceName, float volume)
+{
+    auto resource = Resources::getInstance()->getResource(resourceName);
+    if (resource == nullptr)
+    {
+        return false;
+    }
+
+    auto sound = Mix_LoadWAV_IO(resource, 0);
+    if (sound == NULL)
+    {
+        return false;
+    }
+
+    Mix_VolumeChunk(sound, static_cast<int>(MIX_MAX_VOLUME * volume));
 
     sounds[soundName] = sound;
 
@@ -72,4 +100,30 @@ bool Mixer::playSound(const std::string &soundName)
     }
 
     return true;
+}
+
+void Mixer::setMasterVolume(int volume)
+{
+    masterVolume = volume;
+
+    Mix_MasterVolume(masterVolume);
+}
+
+void Mixer::mute()
+{
+    muted = true;
+
+    Mix_MasterVolume(0);
+}
+
+void Mixer::unMute()
+{
+    muted = false;
+
+    Mix_MasterVolume(masterVolume);
+}
+
+bool Mixer::isMuted()
+{
+    return muted;
 }
