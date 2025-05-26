@@ -39,6 +39,9 @@ public:
     void __checkDeleteObjects();
     bool __queuedForDeletion();
 
+    void setVisible(bool value);
+    bool isVisible();
+
     static std::shared_ptr<Object> create()
     {
         auto obj = std::make_shared<Object>();
@@ -48,15 +51,17 @@ public:
     }
 
 protected:
+    std::weak_ptr<Object> parent;
+    std::vector<std::shared_ptr<Object>> children;
+
+    bool visible = true;
+
     virtual void init();
     virtual void cleanup();
 
     virtual void input();
     virtual void update(float dt);
     virtual void output();
-
-    std::weak_ptr<Object> parent;
-    std::vector<std::shared_ptr<Object>> children;
 
 private:
     std::string id;

@@ -8,10 +8,13 @@
 class Visual : public Entity
 {
 public:
-    SDL_Color color = {255, 255, 255, 255};
-
     Visual();
     Visual(Vector position);
 
-    virtual ~Visual();
+    ~Visual();
+
+    virtual void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+
+protected:
+    SDL_Color color = {255, 255, 255, 255};
 };

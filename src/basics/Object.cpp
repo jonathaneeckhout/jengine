@@ -172,6 +172,11 @@ void Object::__update(float dt)
 
 void Object::__output()
 {
+    if (!visible)
+    {
+        return;
+    }
+
     output();
 
     for (const auto &child : children)
@@ -206,6 +211,16 @@ void Object::__checkDeleteObjects()
 bool Object::__queuedForDeletion()
 {
     return shouldDelete;
+}
+
+void Object::setVisible(bool value)
+{
+    visible = value;
+}
+
+bool Object::isVisible()
+{
+    return visible;
 }
 
 void Object::init() {}

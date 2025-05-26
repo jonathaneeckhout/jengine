@@ -5,12 +5,9 @@
 class Square : public Visual
 {
 public:
-    int width = 0;
-    int height = 0;
+    Vector size;
 
-    Square(int width, int height);
-
-    Square(Vector position, int width, int height);
+    Square(Vector position, Vector size);
 
     ~Square();
 
