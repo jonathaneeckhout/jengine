@@ -1,7 +1,10 @@
 #pragma once
+
 #include <atomic>
 #include <string>
 #include <memory>
+#include <random>
+#include <ctime>
 
 #include "jengine/basics/Object.hpp"
 #include "jengine/core/Physics.hpp"
@@ -59,6 +62,9 @@ public:
         return std::dynamic_pointer_cast<T>(sp);
     }
 
+    float getRandomFloat();
+    bool shouldHappen(float probability);
+
 private:
     static Game *instancePtr;
 
@@ -74,6 +80,9 @@ private:
     Resources *resources = nullptr;
 
     std::shared_ptr<Object> rootObject = nullptr;
+
+    std::mt19937 randomGenerator;
+    std::uniform_real_distribution<float> randomDistribution;
 
     Game();
 

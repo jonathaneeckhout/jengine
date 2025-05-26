@@ -8,7 +8,9 @@
 
 Game *Game::instancePtr = nullptr;
 
-Game::Game() : running(false)
+Game::Game() : running(false),
+               randomGenerator(static_cast<unsigned int>(std::time(nullptr))),
+               randomDistribution(0.0f, 1.0f)
 {
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
     {
@@ -179,4 +181,14 @@ void Game::setRootObject(std::shared_ptr<Object> object)
 {
     rootObject = object;
     rootObject->__addToGame();
+}
+
+float Game::getRandomFloat()
+{
+    return randomDistribution(randomGenerator);
+}
+
+bool Game::shouldHappen(float probability)
+{
+    return getRandomFloat() <= probability;
 }
