@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 
 #include "jengine/visuals/Visual.hpp"
 #include "jengine/visuals/Square.hpp"
@@ -8,6 +9,8 @@
 class Button : public Visual
 {
 public:
+    std::vector<std::function<void()>> pressHandlers = {};
+
     Button(Vector position, Vector size);
     ~Button();
 

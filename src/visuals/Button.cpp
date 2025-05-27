@@ -68,4 +68,9 @@ void Button::setPressed()
     state = Button::PRESSED;
 
     updateColor();
+
+    for (const auto &handler : pressHandlers)
+    {
+        handler();
+    }
 }
