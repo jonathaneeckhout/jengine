@@ -17,7 +17,9 @@ public:
     std::weak_ptr<Object> getParent() const;
 
     std::vector<std::weak_ptr<Object>> getChildren() const;
+    std::size_t getChildrenSize();
     std::weak_ptr<Object> getChild(const std::string &childID);
+    std::weak_ptr<Object> getChild(const unsigned int index);
     std::weak_ptr<Object> getChildByName(const std::string &name);
 
     virtual bool addChild(std::shared_ptr<Object> child);

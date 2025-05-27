@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include <functional>
+#include <unordered_map>
 
 #include "jengine/basics/Object.hpp"
 #include "jengine/basics/Vector.hpp"
@@ -35,8 +36,15 @@ public:
 
     void input() override;
 
+    void registerKeys(const std::string &name, const std::string &key);
+    const std::string getMapping(const std::string &name);
+    bool isMapping(const std::string &name, const std::string &key);
+    void clearMappings();
+
 private:
     static Controls *instancePtr;
+
+    std::unordered_map<std::string, std::string> keyMappings;
 
     Controls();
 

@@ -13,10 +13,24 @@ public:
 
     void init() override;
 
+    void setIdle();
+    void setSelected();
+    void setPressed();
+
+    void setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) override;
     void setSelectedColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
     void setPressColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 protected:
+    enum State
+    {
+        IDLE,
+        SELECTED,
+        PRESSED
+    };
+
+    State state = IDLE;
+
     Vector size = Vector(32.0, 32.0);
 
     Vector margin = Vector(2.0, 2.0);
@@ -25,4 +39,6 @@ protected:
     SDL_Color pressColor = {196, 196, 196, 255};
 
     std::shared_ptr<Square> body;
+
+    void updateColor();
 };

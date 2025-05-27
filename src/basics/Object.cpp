@@ -35,12 +35,27 @@ std::vector<std::weak_ptr<Object>> Object::getChildren() const
     return result;
 }
 
+std::size_t Object::getChildrenSize()
+{
+    return children.size();
+}
+
 std::weak_ptr<Object> Object::getChild(const std::string &childID)
 {
     auto it = std::find_if(children.begin(), children.end(), [&](const std::shared_ptr<Object> &entry)
                            { return entry && entry->getId() == childID; });
 
     return (it != children.end()) ? *it : std::weak_ptr<Object>{};
+}
+
+std::weak_ptr<Object> Object::getChild(const unsigned int index)
+{
+    if (index < children.size() && children[index])
+    {
+        return children[index];
+    }
+
+    return std::weak_ptr<Object>{};
 }
 
 std::weak_ptr<Object> Object::getChildByName(const std::string &searchName)

@@ -114,3 +114,35 @@ void Controls::invokeMouseHandlers(const std::vector<std::function<void(Vector)>
         handler(mousePosition);
     }
 }
+
+void Controls::registerKeys(const std::string &name, const std::string &key)
+{
+    keyMappings[name] = key;
+}
+
+const std::string Controls::getMapping(const std::string &name)
+{
+    auto mapping = keyMappings.find(name);
+    if (mapping == keyMappings.end())
+    {
+        return "";
+    }
+
+    return mapping->second;
+}
+
+bool Controls::isMapping(const std::string &name, const std::string &key)
+{
+    auto mapping = getMapping(name);
+    if (mapping == "")
+    {
+        return false;
+    }
+
+    return key == mapping;
+}
+
+void Controls::clearMappings()
+{
+    keyMappings.clear();
+}
