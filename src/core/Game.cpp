@@ -40,8 +40,19 @@ Game::Game() : running(false),
 
 Game::~Game()
 {
-    // This line will call the destructors of all objects as this is the main reference to all objects.
-    rootObject = nullptr;
+    if (rootObject != nullptr)
+    {
+        rootObject->__removeFromGame();
+        rootObject->__cleanup();
+        rootObject = nullptr;
+    }
+
+    if (oldRootObject != nullptr)
+    {
+        oldRootObject->__removeFromGame();
+        oldRootObject->__cleanup();
+        oldRootObject = nullptr;
+    }
 
     Physics::deleteInstance();
     phyics = nullptr;
@@ -164,6 +175,13 @@ void Game::output()
 
 void Game::checkDeleteObjects()
 {
+    if (oldRootObject != nullptr)
+    {
+        oldRootObject->__removeFromGame();
+        oldRootObject->__cleanup();
+        oldRootObject = nullptr;
+    }
+
     rootObject->__checkDeleteObjects();
 }
 
@@ -179,11 +197,7 @@ float Game::getFPS()
 
 void Game::setRootObject(std::shared_ptr<Object> object)
 {
-    if (rootObject != nullptr)
-    {
-        rootObject->__removeFromGame();
-        rootObject->__cleanup();
-    }
+    oldRootObject = rootObject;
 
     rootObject = object;
     rootObject->__addToGame();

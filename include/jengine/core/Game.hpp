@@ -80,6 +80,7 @@ private:
     Resources *resources = nullptr;
 
     std::shared_ptr<Object> rootObject = nullptr;
+    std::shared_ptr<Object> oldRootObject = nullptr;
 
     std::mt19937 randomGenerator;
     std::uniform_real_distribution<float> randomDistribution;

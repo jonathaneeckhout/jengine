@@ -10,21 +10,15 @@
 class Controls : public Object
 {
 public:
+    enum MouseEventType
+    {
+        MOUSE_LEFT_BUTTON,
+        MOUSE_RIGHT_BUTTON,
+        MOUSE_MIDDLE_BUTTON,
+        MOUSE_MOVEMENT
+    };
+
     std::function<void()> onStop = nullptr;
-
-    std::vector<std::function<void(std::string)>> keyPressHandlers = {};
-    std::vector<std::function<void(std::string)>> keyReleaseHandlers = {};
-
-    std::vector<std::function<void(Vector)>> mouseLeftClickHandlers = {};
-    std::vector<std::function<void(Vector)>> mouseLeftReleaseHandlers = {};
-
-    std::vector<std::function<void(Vector)>> mouseRightClickHandlers = {};
-    std::vector<std::function<void(Vector)>> mouseRightReleaseHandlers = {};
-
-    std::vector<std::function<void(Vector)>> mouseMiddleClickHandlers = {};
-    std::vector<std::function<void(Vector)>> mouseMiddleReleaseHandlers = {};
-
-    std::vector<std::function<void(Vector)>> mouseMovementHandlers = {};
 
     ~Controls();
 
@@ -36,6 +30,12 @@ public:
 
     void input() override;
 
+    int addKeyHandler(std::function<void(const std::string &key, bool pressed)> handler);
+    void removeKeyHandler(int id);
+
+    int addMouseHandler(std::function<void(MouseEventType eventType, bool pressed, Vector mousePosition)> handler);
+    void removeMouseHandler(int id);
+
     void registerKeys(const std::string &name, const std::string &key);
     const std::string getMapping(const std::string &name);
     bool isMapping(const std::string &name, const std::string &key);
@@ -44,10 +44,16 @@ public:
 private:
     static Controls *instancePtr;
 
+    int nextKeyHandlerId = 1;
+    std::unordered_map<int, std::function<void(std::string, bool)>> keyHandlers;
+
+    int nextMouseHandlerId = 1;
+    std::unordered_map<int, std::function<void(MouseEventType, bool, Vector)>> mouseHandlers;
+
     std::unordered_map<std::string, std::string> keyMappings;
 
     Controls();
 
-    static void invokeKeyHandlers(const std::vector<std::function<void(std::string)>> &handlers, const std::string &key);
-    static void invokeMouseHandlers(const std::vector<std::function<void(Vector)>> &handlers, const Vector &mousePosition);
+    void invokeKeyHandlers(const std::string &key, bool pressed);
+    void invokeMouseHandlers(MouseEventType eventType, bool pressed, Vector mousePosition);
 };

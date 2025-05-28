@@ -19,6 +19,8 @@ Mixer::Mixer() : Object()
     {
         throw std::runtime_error("Failed to open  mixer");
     }
+
+    Mix_ChannelFinished(&Mixer::channelFinishedCallback);
 }
 
 Mixer::~Mixer()
@@ -26,6 +28,11 @@ Mixer::~Mixer()
     Mix_CloseAudio();
 
     SDL_CloseAudioDevice(audioDevice);
+}
+
+void Mixer::update(float)
+{
+    processDeferredRemovals();
 }
 
 Mixer *Mixer::getInstance()
@@ -94,12 +101,83 @@ bool Mixer::playSound(const std::string &soundName)
         return false;
     }
 
-    if (Mix_PlayChannel(-1, sound->second, 0) == -1)
+    int channel = Mix_PlayChannel(-1, sound->second, 0);
+    if (channel == -1)
     {
         return false;
     }
 
+    playingChannels[soundName].insert(channel);
+    channelToSound[channel] = soundName;
+
     return true;
+}
+
+bool Mixer::stopSound(const std::string &soundName)
+{
+    auto it = playingChannels.find(soundName);
+    if (it == playingChannels.end())
+    {
+        return false;
+    }
+
+    for (int channel : it->second)
+    {
+        Mix_HaltChannel(channel);
+        channelToSound.erase(channel);
+    }
+
+    playingChannels.erase(it);
+    return true;
+}
+
+void Mixer::stopAllSounds()
+{
+    Mix_HaltChannel(-1);
+
+    playingChannels.clear();
+
+    channelToSound.clear();
+}
+
+void Mixer::channelFinishedCallback(int channel)
+{
+    Mixer::getInstance()->__onChannelFinished(channel);
+}
+
+void Mixer::__onChannelFinished(int channel)
+{
+    std::lock_guard<std::mutex> lock(channelsMutex);
+    channelsToRemove.push_back(channel);
+}
+
+void Mixer::processDeferredRemovals()
+{
+    std::lock_guard<std::mutex> lock(channelsMutex);
+    for (int channel : channelsToRemove)
+    {
+        removeChannel(channel);
+    }
+    channelsToRemove.clear();
+}
+
+void Mixer::removeChannel(int channel)
+{
+    auto it = channelToSound.find(channel);
+    if (it != channelToSound.end())
+    {
+        const std::string &soundName = it->second;
+        auto pit = playingChannels.find(soundName);
+        if (pit != playingChannels.end())
+        {
+            pit->second.erase(channel);
+            if (pit->second.empty())
+            {
+                playingChannels.erase(pit);
+            }
+        }
+        channelToSound.erase(it);
+    }
 }
 
 void Mixer::setMasterVolume(int volume)

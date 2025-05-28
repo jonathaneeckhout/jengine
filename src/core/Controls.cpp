@@ -46,7 +46,7 @@ void Controls::input()
 
             std::string keyName = SDL_GetKeyName(keycode);
 
-            invokeKeyHandlers(keyPressHandlers, keyName);
+            invokeKeyHandlers(keyName, true);
         }
         break;
         case SDL_EVENT_KEY_UP:
@@ -55,20 +55,20 @@ void Controls::input()
 
             std::string keyName = SDL_GetKeyName(keycode);
 
-            invokeKeyHandlers(keyReleaseHandlers, keyName);
+            invokeKeyHandlers(keyName, false);
         }
         break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
             switch (event.button.button)
             {
             case SDL_BUTTON_LEFT:
-                invokeMouseHandlers(mouseLeftClickHandlers, Vector{float(event.button.x), float(event.button.y)});
+                invokeMouseHandlers(MOUSE_LEFT_BUTTON, true, Vector{float(event.button.x), float(event.button.y)});
                 break;
             case SDL_BUTTON_RIGHT:
-                invokeMouseHandlers(mouseRightClickHandlers, Vector{float(event.button.x), float(event.button.y)});
+                invokeMouseHandlers(MOUSE_RIGHT_BUTTON, true, Vector{float(event.button.x), float(event.button.y)});
                 break;
             case SDL_BUTTON_MIDDLE:
-                invokeMouseHandlers(mouseMiddleClickHandlers, Vector{float(event.button.x), float(event.button.y)});
+                invokeMouseHandlers(MOUSE_MIDDLE_BUTTON, true, Vector{float(event.button.x), float(event.button.y)});
                 break;
             default:
                 break;
@@ -78,20 +78,20 @@ void Controls::input()
             switch (event.button.button)
             {
             case SDL_BUTTON_LEFT:
-                invokeMouseHandlers(mouseLeftReleaseHandlers, Vector{float(event.button.x), float(event.button.y)});
+                invokeMouseHandlers(MOUSE_LEFT_BUTTON, false, Vector{float(event.button.x), float(event.button.y)});
                 break;
             case SDL_BUTTON_RIGHT:
-                invokeMouseHandlers(mouseRightReleaseHandlers, Vector{float(event.button.x), float(event.button.y)});
+                invokeMouseHandlers(MOUSE_RIGHT_BUTTON, false, Vector{float(event.button.x), float(event.button.y)});
                 break;
             case SDL_BUTTON_MIDDLE:
-                invokeMouseHandlers(mouseMiddleReleaseHandlers, Vector{float(event.button.x), float(event.button.y)});
+                invokeMouseHandlers(MOUSE_MIDDLE_BUTTON, false, Vector{float(event.button.x), float(event.button.y)});
                 break;
             default:
                 break;
             }
             break;
         case SDL_EVENT_MOUSE_MOTION:
-            invokeMouseHandlers(mouseMovementHandlers, Vector{float(event.motion.x), float(event.motion.y)});
+            invokeMouseHandlers(MOUSE_MOVEMENT, false, Vector{float(event.motion.x), float(event.motion.y)});
             break;
         default:
             break;
@@ -99,19 +99,43 @@ void Controls::input()
     }
 }
 
-void Controls::invokeKeyHandlers(const std::vector<std::function<void(std::string)>> &handlers, const std::string &key)
+int Controls::addKeyHandler(std::function<void(const std::string &key, bool pressed)> handler)
 {
-    for (const auto &handler : handlers)
+    int id = nextKeyHandlerId++;
+    keyHandlers[id] = std::move(handler);
+    return id;
+}
+
+void Controls::removeKeyHandler(int id)
+{
+    keyHandlers.erase(id);
+}
+
+int Controls::addMouseHandler(std::function<void(MouseEventType eventType, bool pressed, Vector coordinates)> handler)
+{
+    int id = nextMouseHandlerId++;
+    mouseHandlers[id] = std::move(handler);
+    return id;
+}
+
+void Controls::removeMouseHandler(int id)
+{
+    mouseHandlers.erase(id);
+}
+
+void Controls::invokeKeyHandlers(const std::string &key, bool pressed)
+{
+    for (const auto &[id, handler] : keyHandlers)
     {
-        handler(key);
+        handler(key, pressed);
     }
 }
 
-void Controls::invokeMouseHandlers(const std::vector<std::function<void(Vector)>> &handlers, const Vector &mousePosition)
+void Controls::invokeMouseHandlers(MouseEventType eventType, bool pressed, Vector mousePosition)
 {
-    for (const auto &handler : handlers)
+    for (const auto &[id, handler] : mouseHandlers)
     {
-        handler(mousePosition);
+        handler(eventType, pressed, mousePosition);
     }
 }
 
