@@ -1,6 +1,4 @@
 #include <gtest/gtest.h>
-#include <memory>
-
 #include "jengine/entities/Entity.hpp"
 
 TEST(EntityTest, DefaultConstructorInitializesToZero)
@@ -41,35 +39,40 @@ TEST(EntityTest, SetGlobalPositionOverridesGlobal)
 
 TEST(EntityTest, ChildEntityGlobalPositionIsRelativeToParent)
 {
-    auto parent = std::make_shared<Entity>(Vector(10, 10));
-    auto child = std::make_shared<Entity>(Vector(5, 5));
+    Entity *parent = new Entity(Vector(10, 10));
+    Entity *child = new Entity(Vector(5, 5));
 
     parent->addChild(child);
 
     EXPECT_EQ(child->getPosition(), Vector(5, 5));
     EXPECT_EQ(child->getGlobalPosition(), Vector(15, 15));
+
+    delete parent;
 }
 
 TEST(EntityTest, NestedChildGlobalPositionIsRecursive)
 {
-    auto root = std::make_shared<Entity>(Vector(1, 1));
-    auto mid = std::make_shared<Entity>(Vector(2, 2));
-    auto leaf = std::make_shared<Entity>(Vector(3, 3));
+    Entity *root = new Entity(Vector(1, 1));
+    Entity *mid = new Entity(Vector(2, 2));
+    Entity *leaf = new Entity(Vector(3, 3));
 
     root->addChild(mid);
     mid->addChild(leaf);
 
-    EXPECT_EQ(leaf->getGlobalPosition(), Vector(6, 6)); // 1+2+3
+    EXPECT_EQ(leaf->getGlobalPosition(), Vector(6, 6)); // 1 + 2 + 3
+
+    delete root;
 }
 
 TEST(EntityTest, UpdatingParentPositionUpdatesChildGlobalPosition)
 {
-    auto parent = std::make_shared<Entity>(Vector(10, 10));
-    auto child = std::make_shared<Entity>(Vector(5, 5));
+    Entity *parent = new Entity(Vector(10, 10));
+    Entity *child = new Entity(Vector(5, 5));
 
     parent->addChild(child);
-
     parent->setPosition(Vector(20, 20));
-    // global should be updated recursively
+
     EXPECT_EQ(child->getGlobalPosition(), Vector(25, 25));
+
+    delete parent;
 }

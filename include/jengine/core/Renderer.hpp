@@ -11,10 +11,10 @@
 class Renderer : public Object
 {
 public:
-    SDL_Window *window;
+    SDL_Window *window = nullptr;
     static const Vector windowSize;
 
-    SDL_Renderer *renderer;
+    SDL_Renderer *renderer = nullptr;
 
     std::map<std::string, TTF_Font *> fonts;
 

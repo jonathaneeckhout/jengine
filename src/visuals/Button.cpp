@@ -5,11 +5,13 @@ Button::Button(Vector position, Vector size) : Visual(position), size(size) {}
 
 Button::~Button() {}
 
-void Button::init()
+void Button::__init()
 {
-    body = Game::create<Square>(Vector(), size);
+    body = new Square(Vector(), size);
 
     addChild(body);
+
+    Visual::__init();
 }
 
 void Button::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)

@@ -16,19 +16,19 @@ public:
 
     virtual ~Entity();
 
-    Vector getPosition() const;
+    const Vector &getPosition() const { return position; };
     void setPosition(Vector newPosition);
 
-    Vector getGlobalPosition() const;
-    void setGlobalPosition(Vector newPosition);
+    const Vector &getGlobalPosition() const { return globalPosition; };
+    void setGlobalPosition(Vector newPosition) { globalPosition = newPosition; };
 
     // Don't override, only for internal usage.
     void __update_global_position();
 
-    bool addChild(std::shared_ptr<Object> child) override;
+    bool addChild(Object *child) override;
 
 private:
-    Vector position;
+    Vector position = {0.0, 0.0};
 
-    Vector globalPosition;
+    Vector globalPosition = {0.0, 0.0};
 };

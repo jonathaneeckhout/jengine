@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <functional>
 
 #include "jengine/visuals/Visual.hpp"
@@ -14,7 +13,7 @@ public:
     Button(Vector position, Vector size);
     ~Button();
 
-    void init() override;
+    void __init() override;
 
     void setIdle();
     void setSelected();
@@ -41,7 +40,7 @@ protected:
     SDL_Color selectedColor = {128, 128, 128, 255};
     SDL_Color pressColor = {196, 196, 196, 255};
 
-    std::shared_ptr<Square> body;
+    Square *body = nullptr;
 
     void updateColor();
 };

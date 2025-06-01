@@ -2,7 +2,6 @@
 
 #include <atomic>
 #include <string>
-#include <memory>
 #include <random>
 #include <ctime>
 
@@ -31,16 +30,19 @@ public:
     // Don't call this function directly. It's exposed for unit test access.
     void __tick(float dt);
 
-    void setFPS(float newFPS);
-    float getFPS();
-    void setRootObject(std::shared_ptr<Object> object);
+    void setFPS(float newFPS) { fps = newFPS; };
+    float getFPS() { return actualFPS; };
+    void setRootObject(Object *object);
+
+    float getRandomFloat();
+    bool shouldHappen(float probability);
 
     template <typename T, typename... Args>
-    static std::shared_ptr<T> create(Args &&...args)
+    static T *create(Args &&...args)
     {
         static_assert(std::is_base_of<Object, T>::value, "T must derive from Object");
 
-        std::shared_ptr<T> obj = std::make_shared<T>(std::forward<Args>(args)...);
+        T *obj = new T(std::forward<Args>(args)...);
 
         obj->__init();
 
@@ -48,22 +50,14 @@ public:
     }
 
     template <typename T>
-    static void destroy(std::shared_ptr<T> obj)
+    static void destroy(T *obj)
     {
         static_assert(std::is_base_of<Object, T>::value, "T must derive from Object");
 
         obj->__cleanup();
-    }
 
-    template <typename T>
-    static std::shared_ptr<T> safeCast(const std::weak_ptr<Object> &weak)
-    {
-        auto sp = weak.lock();
-        return std::dynamic_pointer_cast<T>(sp);
+        delete obj;
     }
-
-    float getRandomFloat();
-    bool shouldHappen(float probability);
 
 private:
     static Game *instancePtr;
@@ -71,7 +65,7 @@ private:
     float fps = 30.0f;
     float actualFPS = 30.f;
 
-    std::atomic<bool> running;
+    std::atomic<bool> running = false;
 
     Physics *phyics = nullptr;
     Renderer *renderer = nullptr;
@@ -79,8 +73,8 @@ private:
     Controls *controls = nullptr;
     Resources *resources = nullptr;
 
-    std::shared_ptr<Object> rootObject = nullptr;
-    std::shared_ptr<Object> oldRootObject = nullptr;
+    Object *rootObject = nullptr;
+    Object *oldRootObject = nullptr;
 
     std::mt19937 randomGenerator;
     std::uniform_real_distribution<float> randomDistribution;

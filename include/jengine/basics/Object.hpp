@@ -1,73 +1,64 @@
 #pragma once
 
 #include <string>
-#include <memory>
 #include <vector>
 
-class Object : public std::enable_shared_from_this<Object>
+class Object
 {
 public:
     Object();
     virtual ~Object();
 
-    const std::string &getId() const;
+    const std::string &getId() const { return id; };
     const std::string &getName() const { return name; }
-    void setName(const std::string &n) { name = n; }
+    void setName(const std::string &newName) { name = newName; }
 
-    std::weak_ptr<Object> getParent() const;
+    Object *getParent() const { return parent; };
 
-    std::vector<std::weak_ptr<Object>> getChildren() const;
-    std::size_t getChildrenSize();
-    std::weak_ptr<Object> getChild(const std::string &childID);
-    std::weak_ptr<Object> getChild(const unsigned int index);
-    std::weak_ptr<Object> getChildByName(const std::string &name);
+    const std::vector<Object *> &getChildren() const { return children; };
+    std::size_t getChildrenSize() { return children.size(); };
+    Object *getChild(const std::string &childID);
+    Object *getChild(const unsigned int index);
+    Object *getChildByName(const std::string &name);
 
-    virtual bool addChild(std::shared_ptr<Object> child);
-    std::shared_ptr<Object> removeChild(Object *child);
+    virtual bool addChild(Object *child);
+    Object *removeChild(Object *child);
 
     void queueDelete();
-
-    virtual void __init();
-    virtual void __cleanup();
 
     virtual void __addToGame();
     virtual void __removeFromGame();
 
     bool isPartOfGame() { return partOfGame; };
 
+    virtual void __init() { init(); };
+    virtual void __cleanup() { cleanup(); };
+
     void __input();
     void __update(float dt);
     void __output();
     void __checkDeleteObjects();
-    bool __queuedForDeletion();
+    bool __queuedForDeletion() { return shouldDelete; };
 
-    void setVisible(bool value);
-    bool isVisible();
-
-    static std::shared_ptr<Object> create()
-    {
-        auto obj = std::make_shared<Object>();
-        obj->__init();
-
-        return obj;
-    }
+    void setVisible(bool value) { visible = value; };
+    bool isVisible() { return visible; };
 
 protected:
-    std::weak_ptr<Object> parent;
-    std::vector<std::shared_ptr<Object>> children;
+    Object *parent = nullptr;
+    std::vector<Object *> children;
 
     bool visible = true;
 
-    virtual void init();
-    virtual void cleanup();
+    virtual void init() {};
+    virtual void cleanup() {};
 
-    virtual void input();
-    virtual void update(float dt);
-    virtual void output();
+    virtual void input() {};
+    virtual void update(float) {};
+    virtual void output() {};
 
 private:
-    std::string id;
-    std::string name;
+    std::string id = "";
+    std::string name = "";
     bool partOfGame = false;
     bool shouldDelete = false;
 };

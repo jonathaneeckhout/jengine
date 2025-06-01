@@ -11,11 +11,7 @@ void CollisionShape::__addToGame()
 
     Physics *physics = Physics::getInstance();
 
-    std::shared_ptr<CollisionShape> self = std::dynamic_pointer_cast<CollisionShape>(shared_from_this());
-    if (self)
-    {
-        physics->addCollisionShape(self);
-    }
+    physics->addCollisionShape(this);
 }
 
 void CollisionShape::__removeFromGame()
@@ -26,10 +22,8 @@ void CollisionShape::__removeFromGame()
 
     for (auto &collider : colliders)
     {
-        if (auto col = collider.lock())
-        {
-            col->removeCollider(this);
-        }
+
+        collider->removeCollider(this);
     }
 
     Entity::__removeFromGame();
@@ -41,66 +35,45 @@ void CollisionShape::update(float)
 {
     Physics *physics = Physics::getInstance();
 
-    // Remove expired colliders before comparison
-    colliders.erase(
-        std::remove_if(colliders.begin(), colliders.end(),
-                       [](const std::weak_ptr<CollisionShape> &w)
-                       { return w.expired(); }),
-        colliders.end());
+    std::vector<CollisionShape *> newColliders = physics->checkCollision(*this);
 
-    std::vector<std::weak_ptr<CollisionShape>> newColliders = physics->checkCollision(*this);
-
-    std::vector<std::weak_ptr<CollisionShape>> removedColliders;
-    for (const auto &currentWeak : colliders)
+    std::vector<CollisionShape *> removedColliders;
+    for (const auto &currentCollider : colliders)
     {
-        if (currentWeak.expired())
-            continue;
-
-        auto current = currentWeak.lock();
         bool stillPresent = false;
 
-        for (const auto &newWeak : newColliders)
+        for (const auto &newCollider : newColliders)
         {
-            if (auto nw = newWeak.lock())
+            if (newCollider == currentCollider)
             {
-                if (nw == current)
-                {
-                    stillPresent = true;
-                    break;
-                }
+                stillPresent = true;
+                break;
             }
         }
 
         if (!stillPresent)
         {
-            removedColliders.push_back(current);
+            removedColliders.push_back(currentCollider);
         }
     }
 
-    std::vector<std::weak_ptr<CollisionShape>> addedColliders;
-    for (const auto &newWeak : newColliders)
+    std::vector<CollisionShape *> addedColliders;
+    for (const auto &newCollider : newColliders)
     {
-        if (newWeak.expired())
-            continue;
-
-        auto newShape = newWeak.lock();
         bool alreadyPresent = false;
 
-        for (const auto &currentWeak : colliders)
+        for (const auto &currentCollider : colliders)
         {
-            if (auto cw = currentWeak.lock())
+            if (currentCollider == newCollider)
             {
-                if (cw == newShape)
-                {
-                    alreadyPresent = true;
-                    break;
-                }
+                alreadyPresent = true;
+                break;
             }
         }
 
         if (!alreadyPresent)
         {
-            addedColliders.push_back(newShape);
+            addedColliders.push_back(newCollider);
         }
     }
 
@@ -111,21 +84,12 @@ void CollisionShape::update(float)
     triggerStartHandlers(addedColliders);
 }
 
-const std::vector<std::weak_ptr<CollisionShape>> CollisionShape::getColliders()
-{
-    return colliders;
-}
-
 void CollisionShape::removeCollider(const CollisionShape *shape)
 {
     auto it = std::remove_if(colliders.begin(), colliders.end(),
-                             [shape](const std::weak_ptr<CollisionShape> &weakPtr)
+                             [shape](CollisionShape *ptr)
                              {
-                                 if (auto shared = weakPtr.lock())
-                                 {
-                                     return shared.get() == shape;
-                                 }
-                                 return false;
+                                 return ptr == shape;
                              });
 
     if (it != colliders.end())
@@ -134,7 +98,7 @@ void CollisionShape::removeCollider(const CollisionShape *shape)
     }
 }
 
-void CollisionShape::triggerStartHandlers(std::vector<std::weak_ptr<CollisionShape>> &addedColliders)
+void CollisionShape::triggerStartHandlers(const std::vector<CollisionShape *> &addedColliders)
 {
     for (auto &collider : addedColliders)
     {
@@ -145,7 +109,7 @@ void CollisionShape::triggerStartHandlers(std::vector<std::weak_ptr<CollisionSha
     }
 }
 
-void CollisionShape::triggerEndHandlers(std::vector<std::weak_ptr<CollisionShape>> &removedColliders)
+void CollisionShape::triggerEndHandlers(const std::vector<CollisionShape *> &removedColliders)
 {
     for (auto &collider : removedColliders)
     {

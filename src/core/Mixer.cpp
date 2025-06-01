@@ -25,6 +25,15 @@ Mixer::Mixer() : Object()
 
 Mixer::~Mixer()
 {
+    for (auto sound : sounds)
+    {
+        Mix_FreeChunk(sound.second);
+    }
+
+    stopAllSounds();
+
+    Mix_Volume(-1, 0);
+
     Mix_CloseAudio();
 
     SDL_CloseAudioDevice(audioDevice);

@@ -27,9 +27,9 @@ void Physics::deleteInstance()
     }
 }
 
-bool Physics::addCollisionShape(std::shared_ptr<CollisionShape> &shape)
+bool Physics::addCollisionShape(CollisionShape *shape)
 {
-    if (!shape)
+    if (shape == nullptr)
     {
         return false;
     }
@@ -55,32 +55,19 @@ bool Physics::removeCollisionShape(const std::string &id)
     return true;
 }
 
-std::vector<std::weak_ptr<CollisionShape>> Physics::checkCollision(const CollisionShape &shape)
+std::vector<CollisionShape *> Physics::checkCollision(const CollisionShape &shape)
 {
-    std::vector<std::weak_ptr<CollisionShape>> collisions;
+    std::vector<CollisionShape *> collisions;
 
-    for (auto it = collisionShapes.begin(); it != collisionShapes.end();)
-    {
-        std::shared_ptr<CollisionShape> other = it->second.lock();
-
-        if (!other)
-        {
-            it = collisionShapes.erase(it);
+    for(const auto &collider : collisionShapes) {
+        if(collider.second == &shape) {
             continue;
         }
-
-        if (other.get() == &shape)
+    
+        if (shape.collidesWith(*collider.second))
         {
-            ++it;
-            continue;
+            collisions.push_back(collider.second);
         }
-
-        if (shape.collidesWith(*other))
-        {
-            collisions.push_back(it->second);
-        }
-
-        ++it;
     }
 
     return collisions;

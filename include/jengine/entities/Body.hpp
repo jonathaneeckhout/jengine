@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "jengine/basics/Vector.hpp"
 #include "jengine/entities/Entity.hpp"
 #include "jengine/collision/CollisionShape.hpp"
@@ -9,7 +7,7 @@
 class Body : public Entity
 {
 public:
-    std::shared_ptr<CollisionShape> collisionShape;
+   CollisionShape * collisionShape;
 
     Body();
 

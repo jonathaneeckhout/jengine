@@ -42,15 +42,19 @@ Game::~Game()
 {
     if (rootObject != nullptr)
     {
-        rootObject->__removeFromGame();
         rootObject->__cleanup();
+
+        delete rootObject;
+
         rootObject = nullptr;
     }
 
     if (oldRootObject != nullptr)
     {
-        oldRootObject->__removeFromGame();
-        oldRootObject->__cleanup();
+        rootObject->__cleanup();
+
+        delete oldRootObject;
+
         oldRootObject = nullptr;
     }
 
@@ -178,24 +182,18 @@ void Game::checkDeleteObjects()
     if (oldRootObject != nullptr)
     {
         oldRootObject->__removeFromGame();
+
         oldRootObject->__cleanup();
+
+        delete oldRootObject;
+
         oldRootObject = nullptr;
     }
 
     rootObject->__checkDeleteObjects();
 }
 
-void Game::setFPS(float newFPS)
-{
-    fps = newFPS;
-}
-
-float Game::getFPS()
-{
-    return actualFPS;
-}
-
-void Game::setRootObject(std::shared_ptr<Object> object)
+void Game::setRootObject(Object *object)
 {
     oldRootObject = rootObject;
 

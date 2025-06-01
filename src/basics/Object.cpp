@@ -10,55 +10,34 @@ Object::~Object()
 {
     for (auto &child : children)
     {
-        if (child)
+        delete child;
+    }
+}
+
+Object *Object::getChild(const std::string &childID)
+{
+    for (auto child : children)
+    {
+        if (child->getId() == childID)
         {
-            child->__cleanup();
+            return child;
         }
     }
+
+    return nullptr;
 }
 
-const std::string &Object::getId() const { return id; }
-
-std::weak_ptr<Object> Object::getParent() const { return parent; }
-
-std::vector<std::weak_ptr<Object>> Object::getChildren() const
+Object *Object::getChild(const unsigned int index)
 {
-    std::vector<std::weak_ptr<Object>> result;
-
-    result.reserve(children.size());
-
-    for (const auto &c : children)
-    {
-        result.push_back(c);
-    }
-
-    return result;
-}
-
-std::size_t Object::getChildrenSize()
-{
-    return children.size();
-}
-
-std::weak_ptr<Object> Object::getChild(const std::string &childID)
-{
-    auto it = std::find_if(children.begin(), children.end(), [&](const std::shared_ptr<Object> &entry)
-                           { return entry && entry->getId() == childID; });
-
-    return (it != children.end()) ? *it : std::weak_ptr<Object>{};
-}
-
-std::weak_ptr<Object> Object::getChild(const unsigned int index)
-{
-    if (index < children.size() && children[index])
+    if (index < children.size())
     {
         return children[index];
     }
 
-    return std::weak_ptr<Object>{};
+    return nullptr;
 }
 
-std::weak_ptr<Object> Object::getChildByName(const std::string &searchName)
+Object *Object::getChildByName(const std::string &searchName)
 {
     for (const auto &child : children)
     {
@@ -68,22 +47,22 @@ std::weak_ptr<Object> Object::getChildByName(const std::string &searchName)
         }
     }
 
-    return std::weak_ptr<Object>{};
+    return nullptr;
 }
 
-bool Object::addChild(std::shared_ptr<Object> child)
+bool Object::addChild(Object *child)
 {
     if (!child)
     {
         return false;
     }
 
-    if (!getChild(child->getId()).expired())
+    if (getChild(child->getId()) != nullptr)
     {
         return false;
     }
 
-    child->parent = shared_from_this();
+    child->parent = this;
 
     if (isPartOfGame())
     {
@@ -95,17 +74,17 @@ bool Object::addChild(std::shared_ptr<Object> child)
     return true;
 }
 
-std::shared_ptr<Object> Object::removeChild(Object *childPtr)
+Object *Object::removeChild(Object *child)
 {
-    if (!childPtr)
+    if (!child)
     {
         return nullptr;
     }
 
     auto it = std::find_if(children.begin(), children.end(),
-                           [&](const std::shared_ptr<Object> &entry)
+                           [&](Object *entry)
                            {
-                               return entry.get() == childPtr;
+                               return entry && entry->getId() == child->getId();
                            });
 
     if (it == children.end())
@@ -113,30 +92,19 @@ std::shared_ptr<Object> Object::removeChild(Object *childPtr)
         return nullptr;
     }
 
-    (*it)->parent.reset();
+    Object *removed = *it;
 
-    (*it)->__removeFromGame();
-
-    std::shared_ptr<Object> removedChild = std::move(*it);
+    removed->__removeFromGame();
+    removed->parent = nullptr;
 
     children.erase(it);
 
-    return removedChild;
+    return removed;
 }
 
 void Object::queueDelete()
 {
     shouldDelete = true;
-}
-
-void Object::__init()
-{
-    init();
-}
-
-void Object::__cleanup()
-{
-    cleanup();
 }
 
 void Object::__addToGame()
@@ -205,41 +173,29 @@ void Object::__output()
 
 void Object::__checkDeleteObjects()
 {
-    for (const auto &child : children)
-    {
-        if (child)
-        {
-            if (child->__queuedForDeletion())
-            {
-                child->__cleanup();
+    std::vector<Object *> toDelete;
 
-                removeChild(child.get());
-            }
-            else
-            {
-                child->__checkDeleteObjects();
-            }
+    for (auto child : children)
+    {
+
+        if (child->__queuedForDeletion())
+        {
+            toDelete.push_back(child);
+        }
+        else
+        {
+            child->__checkDeleteObjects();
         }
     }
-}
 
-bool Object::__queuedForDeletion()
-{
-    return shouldDelete;
-}
+    for (Object *child : toDelete)
+    {
+        removeChild(child);
 
-void Object::setVisible(bool value)
-{
-    visible = value;
-}
+        child->__cleanup();
 
-bool Object::isVisible()
-{
-    return visible;
-}
+        delete child;
 
-void Object::init() {}
-void Object::cleanup() {}
-void Object::input() {}
-void Object::update(float) {}
-void Object::output() {}
+        child = nullptr;
+    }
+}
