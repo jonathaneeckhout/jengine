@@ -2,15 +2,13 @@
 
 #include "jengine/core/Renderer.hpp"
 
-const Vector Renderer::windowSize = {800, 600};
-
 Renderer::Renderer() : Object()
 {
     setName("Renderer");
 
     window = SDL_CreateWindow("JEngine Game",
-                              int(windowSize.x),
-                              int(windowSize.y),
+                              static_cast<int>(windowSize.x),
+                              static_cast<int>(windowSize.y),
                               SDL_WINDOW_HIGH_PIXEL_DENSITY);
 
     if (!window)
@@ -43,6 +41,13 @@ void Renderer::clear()
 void Renderer::present()
 {
     SDL_RenderPresent(renderer);
+}
+
+void Renderer::setWindowSize(Vector newSize)
+{
+    windowSize = newSize;
+
+    SDL_SetWindowSize(window, static_cast<int>(windowSize.x), static_cast<int>(windowSize.y));
 }
 
 void Renderer::setWindowTitle(std::string title)

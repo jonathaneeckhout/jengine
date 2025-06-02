@@ -12,7 +12,6 @@ class Renderer : public Object
 {
 public:
     SDL_Window *window = nullptr;
-    static const Vector windowSize;
 
     SDL_Renderer *renderer = nullptr;
 
@@ -24,5 +23,11 @@ public:
     void clear();
     void present();
 
+    Vector getWindowSize() { return windowSize; }
+    void setWindowSize(Vector newSize);
+
     void setWindowTitle(std::string title);
+
+private:
+    Vector windowSize = {800.0, 600.0};
 };
