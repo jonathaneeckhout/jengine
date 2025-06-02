@@ -1,5 +1,5 @@
-#include <jengine/visuals/Square.hpp>
-#include <jengine/core/Renderer.hpp>
+#include "jengine/visuals/Square.hpp"
+#include "jengine/core/Game.hpp"
 
 Square::Square(Vector position, Vector size) : Visual(position), size(size) {}
 
@@ -7,7 +7,7 @@ Square::~Square() {}
 
 void Square::output()
 {
-    Renderer *renderer = Renderer::getInstance();
+    Renderer *renderer = Game::getInstance()->renderer;
     if (renderer == nullptr)
     {
         return;

@@ -1,14 +1,13 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include "jengine/visuals/Text.hpp"
+#include "jengine/core/Game.hpp"
 #include "jengine/core/Resources.hpp"
 #include "jengine/core/Renderer.hpp"
 
 Text::Text(Vector position, const std::string &text, unsigned int size, const std::string &resourceName) : Visual(position)
 {
-    auto resources = Resources::getInstance();
-
-    auto fontIO = resources->getResource(resourceName);
+    auto fontIO = Game::getInstance()->resources->getResource(resourceName);
     if (fontIO == nullptr)
     {
         return;
@@ -45,8 +44,6 @@ Text::~Text()
 
 void Text::output()
 {
-    Renderer *renderer = Renderer::getInstance();
-
     Vector position = getGlobalPosition();
 
     SDL_FRect rect;
@@ -60,7 +57,7 @@ void Text::output()
         rect = {position.x, position.y, float(surface->w), float(surface->h)};
     }
 
-    SDL_RenderTexture(renderer->renderer, texture, NULL, &rect);
+    SDL_RenderTexture(Game::getInstance()->renderer->renderer, texture, NULL, &rect);
 }
 
 void Text::setText(const std::string &text)
@@ -84,7 +81,7 @@ void Text::setText(const std::string &text)
         return;
     }
 
-    texture = SDL_CreateTextureFromSurface(Renderer::getInstance()->renderer, surface);
+    texture = SDL_CreateTextureFromSurface(Game::getInstance()->renderer->renderer, surface);
     if (texture == NULL)
     {
         texture = nullptr;

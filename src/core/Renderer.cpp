@@ -2,8 +2,6 @@
 
 #include "jengine/core/Renderer.hpp"
 
-Renderer *Renderer::instancePtr = nullptr;
-
 const Vector Renderer::windowSize = {800, 600};
 
 Renderer::Renderer() : Object()
@@ -12,7 +10,7 @@ Renderer::Renderer() : Object()
 
     window = SDL_CreateWindow("JEngine Game",
                               int(windowSize.x),
-                               int(windowSize.y),
+                              int(windowSize.y),
                               SDL_WINDOW_HIGH_PIXEL_DENSITY);
 
     if (!window)
@@ -34,25 +32,6 @@ Renderer::~Renderer()
     SDL_DestroyRenderer(renderer);
 
     SDL_DestroyWindow(window);
-}
-
-Renderer *Renderer::getInstance()
-{
-    if (!instancePtr)
-    {
-        instancePtr = new Renderer();
-    }
-
-    return instancePtr;
-}
-
-void Renderer::deleteInstance()
-{
-    if (instancePtr)
-    {
-        delete instancePtr;
-        instancePtr = nullptr;
-    }
 }
 
 void Renderer::clear()

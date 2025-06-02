@@ -20,13 +20,8 @@ public:
 
     std::function<void()> onStop = nullptr;
 
+    Controls();
     ~Controls();
-
-    // Delete copy constructor
-    Controls(const Controls &) = delete;
-
-    static Controls *getInstance();
-    static void deleteInstance();
 
     void input() override;
 
@@ -42,8 +37,6 @@ public:
     void clearMappings();
 
 private:
-    static Controls *instancePtr;
-
     int nextKeyHandlerId = 1;
     std::unordered_map<int, std::function<void(std::string, bool)>> keyHandlers;
 
@@ -51,8 +44,6 @@ private:
     std::unordered_map<int, std::function<void(MouseEventType, bool, Vector)>> mouseHandlers;
 
     std::unordered_map<std::string, std::string> keyMappings;
-
-    Controls();
 
     void invokeKeyHandlers(const std::string &key, bool pressed);
     void invokeMouseHandlers(MouseEventType eventType, bool pressed, Vector mousePosition);

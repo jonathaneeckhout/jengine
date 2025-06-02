@@ -14,14 +14,10 @@ class Mixer : public Object
 public:
     SDL_AudioDeviceID audioDevice;
 
+    Mixer();
     ~Mixer();
 
-    Mixer(const Mixer &) = delete;
-
     void update(float dt) override;
-
-    static Mixer *getInstance();
-    static void deleteInstance();
 
     bool loadSound(const std::string &soundName, const std::string &resourceName);
     bool loadSound(const std::string &soundName, const std::string &resourceName, float volume);
@@ -39,8 +35,6 @@ public:
     void __onChannelFinished(int channel);
 
 private:
-    static Mixer *instancePtr;
-
     std::unordered_map<std::string, Mix_Chunk *> sounds;
     std::unordered_map<std::string, std::unordered_set<int>> playingChannels;
     std::unordered_map<int, std::string> channelToSound;
@@ -50,8 +44,6 @@ private:
 
     int masterVolume = MIX_MAX_VOLUME;
     bool muted = false;
-
-    Mixer();
 
     static void channelFinishedCallback(int channel);
     void processDeferredRemovals();

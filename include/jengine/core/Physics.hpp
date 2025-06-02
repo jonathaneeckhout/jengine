@@ -9,13 +9,8 @@
 class Physics : public Object
 {
 public:
+    Physics();
     ~Physics();
-
-    // Delete copy constructor
-    Physics(const Physics &) = delete;
-
-    static Physics *getInstance();
-    static void deleteInstance();
 
     bool addCollisionShape(CollisionShape *shape);
     bool removeCollisionShape(const std::string &id);
@@ -23,9 +18,5 @@ public:
     std::vector<CollisionShape *> checkCollision(const CollisionShape &shape);
 
 private:
-    static Physics *instancePtr;
-
     std::unordered_map<std::string, CollisionShape *> collisionShapes;
-
-    Physics();
 };

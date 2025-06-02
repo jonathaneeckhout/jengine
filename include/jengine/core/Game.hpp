@@ -16,6 +16,12 @@ class Game
 {
 
 public:
+    Physics *physics = nullptr;
+    Renderer *renderer = nullptr;
+    Mixer *mixer = nullptr;
+    Controls *controls = nullptr;
+    Resources *resources = nullptr;
+
     ~Game();
 
     // Delete copy constructor
@@ -66,12 +72,6 @@ private:
     float actualFPS = 30.f;
 
     std::atomic<bool> running = false;
-
-    Physics *phyics = nullptr;
-    Renderer *renderer = nullptr;
-    Mixer *mixer = nullptr;
-    Controls *controls = nullptr;
-    Resources *resources = nullptr;
 
     Object *rootObject = nullptr;
     Object *oldRootObject = nullptr;

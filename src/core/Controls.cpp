@@ -1,31 +1,11 @@
 #include "jengine/core/Controls.hpp"
 
-Controls *Controls::instancePtr = nullptr;
-
 Controls::Controls() : Object()
 {
     setName("Controls");
 }
 
 Controls::~Controls() {}
-
-Controls *Controls::getInstance()
-{
-    if (instancePtr == nullptr)
-    {
-        instancePtr = new Controls();
-    }
-    return instancePtr;
-}
-
-void Controls::deleteInstance()
-{
-    if (instancePtr != nullptr)
-    {
-        delete instancePtr;
-        instancePtr = nullptr;
-    }
-}
 
 void Controls::input()
 {

@@ -1,4 +1,5 @@
 #include "jengine/collision/CollisionShape.hpp"
+#include "jengine/core/Game.hpp"
 #include "jengine/core/Physics.hpp"
 
 CollisionShape::CollisionShape(Vector position) : Entity(position) {}
@@ -9,16 +10,12 @@ void CollisionShape::__addToGame()
 {
     Entity::__addToGame();
 
-    Physics *physics = Physics::getInstance();
-
-    physics->addCollisionShape(this);
+    Game::getInstance()->physics->addCollisionShape(this);
 }
 
 void CollisionShape::__removeFromGame()
 {
-    Physics *physics = Physics::getInstance();
-
-    physics->removeCollisionShape(getId());
+    Game::getInstance()->physics->removeCollisionShape(getId());
 
     for (auto &collider : colliders)
     {
@@ -33,9 +30,7 @@ void CollisionShape::__removeFromGame()
 
 void CollisionShape::update(float)
 {
-    Physics *physics = Physics::getInstance();
-
-    std::vector<CollisionShape *> newColliders = physics->checkCollision(*this);
+    std::vector<CollisionShape *> newColliders = Game::getInstance()->physics->checkCollision(*this);
 
     std::vector<CollisionShape *> removedColliders;
     for (const auto &currentCollider : colliders)

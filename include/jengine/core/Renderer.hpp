@@ -18,20 +18,11 @@ public:
 
     std::map<std::string, TTF_Font *> fonts;
 
+    Renderer();
     ~Renderer();
-
-    Renderer(const Renderer &) = delete;
-
-    static Renderer *getInstance();
-    static void deleteInstance();
 
     void clear();
     void present();
 
     void setWindowTitle(std::string title);
-
-private:
-    static Renderer *instancePtr;
-
-    Renderer();
 };

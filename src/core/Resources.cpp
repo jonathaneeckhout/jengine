@@ -1,7 +1,5 @@
 #include "jengine/core/Resources.hpp"
 
-Resources *Resources::instancePtr = nullptr;
-
 Resources::Resources() : Object()
 {
     setName("Resources");
@@ -12,24 +10,6 @@ Resources::~Resources()
     for (auto &resource : resources)
     {
         SDL_CloseIO(resource.second);
-    }
-}
-
-Resources *Resources::getInstance()
-{
-    if (instancePtr == nullptr)
-    {
-        instancePtr = new Resources();
-    }
-    return instancePtr;
-}
-
-void Resources::deleteInstance()
-{
-    if (instancePtr != nullptr)
-    {
-        delete instancePtr;
-        instancePtr = nullptr;
     }
 }
 

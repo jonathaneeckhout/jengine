@@ -1,9 +1,8 @@
 #include <iostream>
 
 #include "jengine/core/Mixer.hpp"
+#include "jengine/core/Game.hpp"
 #include "jengine/core/Resources.hpp"
-
-Mixer *Mixer::instancePtr = nullptr;
 
 Mixer::Mixer() : Object()
 {
@@ -44,27 +43,9 @@ void Mixer::update(float)
     processDeferredRemovals();
 }
 
-Mixer *Mixer::getInstance()
-{
-    if (instancePtr == nullptr)
-    {
-        instancePtr = new Mixer();
-    }
-    return instancePtr;
-}
-
-void Mixer::deleteInstance()
-{
-    if (instancePtr != nullptr)
-    {
-        delete instancePtr;
-        instancePtr = nullptr;
-    }
-}
-
 bool Mixer::loadSound(const std::string &soundName, const std::string &resourceName)
 {
-    auto resource = Resources::getInstance()->getResource(resourceName);
+    auto resource = Game::getInstance()->resources->getResource(resourceName);
     if (resource == nullptr)
     {
         return false;
@@ -83,7 +64,7 @@ bool Mixer::loadSound(const std::string &soundName, const std::string &resourceN
 
 bool Mixer::loadSound(const std::string &soundName, const std::string &resourceName, float volume)
 {
-    auto resource = Resources::getInstance()->getResource(resourceName);
+    auto resource = Game::getInstance()->resources->getResource(resourceName);
     if (resource == nullptr)
     {
         return false;
@@ -151,7 +132,7 @@ void Mixer::stopAllSounds()
 
 void Mixer::channelFinishedCallback(int channel)
 {
-    Mixer::getInstance()->__onChannelFinished(channel);
+    Game::getInstance()->mixer->__onChannelFinished(channel);
 }
 
 void Mixer::__onChannelFinished(int channel)

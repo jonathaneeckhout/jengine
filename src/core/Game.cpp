@@ -22,15 +22,15 @@ Game::Game() : running(false),
         throw std::runtime_error("Failed to initialize TFF");
     }
 
-    phyics = Physics::getInstance();
+    physics = new Physics();
 
-    renderer = Renderer::getInstance();
+    renderer = new Renderer;
 
-    mixer = Mixer::getInstance();
+    mixer = new Mixer();
 
-    controls = Controls::getInstance();
+    controls = new Controls();
 
-    resources = Resources::getInstance();
+    resources = new Resources();
 
     controls->onStop = [this]()
     {
@@ -58,19 +58,19 @@ Game::~Game()
         oldRootObject = nullptr;
     }
 
-    Physics::deleteInstance();
-    phyics = nullptr;
+    delete physics;
+    physics = nullptr;
 
-    Renderer::deleteInstance();
+    delete renderer;
     renderer = nullptr;
 
-    Mixer::deleteInstance();
+    delete mixer;
     mixer = nullptr;
 
-    Controls::deleteInstance();
+    delete controls;
     controls = nullptr;
 
-    Resources::deleteInstance();
+    delete resources;
     resources = nullptr;
 
     TTF_Quit();
@@ -148,7 +148,7 @@ void Game::stop()
 
 void Game::input()
 {
-    phyics->__input();
+    physics->__input();
     renderer->__input();
     controls->__input();
     resources->__input();
@@ -157,7 +157,7 @@ void Game::input()
 
 void Game::update(float dt)
 {
-    phyics->__update(dt);
+    physics->__update(dt);
     renderer->__update(dt);
     controls->__update(dt);
     resources->__update(dt);
@@ -168,7 +168,7 @@ void Game::output()
 {
     renderer->clear();
 
-    phyics->__output();
+    physics->__output();
     renderer->__output();
     controls->__output();
     resources->__output();

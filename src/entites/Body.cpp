@@ -1,4 +1,5 @@
 #include "jengine/entities/Body.hpp"
+#include "jengine/core/Game.hpp"
 #include "jengine/core/Physics.hpp"
 
 Body::Body() {}
@@ -37,8 +38,7 @@ void Body::moveAndStop(float dt)
     setPosition(newPosition);
 
     // Set back the old position if the object collides with others
-    Physics *physics = Physics::getInstance();
-    if (physics->checkCollision(*collisionShape).size() > 0)
+    if (Game::getInstance()->physics->checkCollision(*collisionShape).size() > 0)
     {
         setPosition(oldPosition);
     }

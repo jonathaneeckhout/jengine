@@ -1,31 +1,11 @@
 #include "jengine/core/Physics.hpp"
 
-Physics *Physics::instancePtr = nullptr;
-
 Physics::Physics() : Object()
 {
     setName("Physics");
 }
 
 Physics::~Physics() {}
-
-Physics *Physics::getInstance()
-{
-    if (instancePtr == nullptr)
-    {
-        instancePtr = new Physics();
-    }
-    return instancePtr;
-}
-
-void Physics::deleteInstance()
-{
-    if (instancePtr != nullptr)
-    {
-        delete instancePtr;
-        instancePtr = nullptr;
-    }
-}
 
 bool Physics::addCollisionShape(CollisionShape *shape)
 {
@@ -59,11 +39,13 @@ std::vector<CollisionShape *> Physics::checkCollision(const CollisionShape &shap
 {
     std::vector<CollisionShape *> collisions;
 
-    for(const auto &collider : collisionShapes) {
-        if(collider.second == &shape) {
+    for (const auto &collider : collisionShapes)
+    {
+        if (collider.second == &shape)
+        {
             continue;
         }
-    
+
         if (shape.collidesWith(*collider.second))
         {
             collisions.push_back(collider.second);
