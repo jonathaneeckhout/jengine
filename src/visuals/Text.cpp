@@ -49,7 +49,17 @@ void Text::output()
 
     Vector position = getGlobalPosition();
 
-    SDL_FRect rect = {position.x, position.y, float(surface->w), float(surface->h)};
+    SDL_FRect rect;
+
+    if (centered)
+    {
+        rect = {position.x - (surface->w / 2), position.y - (surface->h / 2), float(surface->w), float(surface->h)};
+    }
+    else
+    {
+        rect = {position.x, position.y, float(surface->w), float(surface->h)};
+    }
+
     SDL_RenderTexture(renderer->renderer, texture, NULL, &rect);
 }
 

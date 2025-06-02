@@ -18,6 +18,7 @@
 #include <jengine/visuals/Square.hpp>
 #include <jengine/visuals/Text.hpp>
 #include <jengine/visuals/Button.hpp>
+#include <jengine/visuals/TextButton.hpp>
 
 #include <jengine/systems/Timer.hpp>
 

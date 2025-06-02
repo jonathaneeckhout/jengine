@@ -8,6 +8,8 @@
 class Text : public Visual
 {
 public:
+    bool centered = false;
+
     Text(Vector position, const std::string &text, unsigned int size, const std::string &resourceName);
     ~Text();
 
