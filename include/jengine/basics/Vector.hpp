@@ -93,6 +93,11 @@ public:
         return *this;
     }
 
+    Vector operator-() const
+    {
+        return Vector(-x, -y);
+    }
+
     float magnitude() const;
 
     Vector normalize() const;
