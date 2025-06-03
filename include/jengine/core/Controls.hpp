@@ -1,13 +1,13 @@
 #pragma once
 
 #include <SDL3/SDL.h>
+#include <string>
 #include <functional>
 #include <unordered_map>
 
-#include "jengine/basics/Object.hpp"
 #include "jengine/basics/Vector.hpp"
 
-class Controls : public Object
+class Controls
 {
 public:
     enum MouseEventType
@@ -23,7 +23,7 @@ public:
     Controls();
     ~Controls();
 
-    void input() override;
+    void input();
 
     int addKeyHandler(std::function<void(const std::string &key, bool pressed)> handler);
     void removeKeyHandler(int id);

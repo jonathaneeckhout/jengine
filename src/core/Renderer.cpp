@@ -2,9 +2,8 @@
 
 #include "jengine/core/Renderer.hpp"
 
-Renderer::Renderer() : Object()
+Renderer::Renderer()
 {
-    setName("Renderer");
 
     window = SDL_CreateWindow("JEngine Game",
                               static_cast<int>(windowSize.x),

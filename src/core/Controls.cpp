@@ -1,9 +1,6 @@
 #include "jengine/core/Controls.hpp"
 
-Controls::Controls() : Object()
-{
-    setName("Controls");
-}
+Controls::Controls() {}
 
 Controls::~Controls() {}
 

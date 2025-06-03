@@ -1,9 +1,6 @@
 #include "jengine/core/Physics.hpp"
 
-Physics::Physics() : Object()
-{
-    setName("Physics");
-}
+Physics::Physics() {}
 
 Physics::~Physics() {}
 

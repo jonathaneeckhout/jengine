@@ -4,9 +4,7 @@
 #include <unordered_map>
 #include <SDL3/SDL.h>
 
-#include "jengine/basics/Object.hpp"
-
-class Resources : public Object
+class Resources
 {
 public:
     Resources();

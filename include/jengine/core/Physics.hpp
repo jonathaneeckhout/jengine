@@ -3,10 +3,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "jengine/basics/Object.hpp"
 #include "jengine/collision/CollisionShape.hpp"
 
-class Physics : public Object
+class Physics
 {
 public:
     Physics();

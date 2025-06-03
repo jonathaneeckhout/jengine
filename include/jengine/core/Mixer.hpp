@@ -3,13 +3,12 @@
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <mutex>
 
-#include "jengine/basics/Object.hpp"
-
-class Mixer : public Object
+class Mixer
 {
 public:
     SDL_AudioDeviceID audioDevice;
@@ -17,7 +16,7 @@ public:
     Mixer();
     ~Mixer();
 
-    void update(float dt) override;
+    void update(float dt);
 
     bool loadSound(const std::string &soundName, const std::string &resourceName);
     bool loadSound(const std::string &soundName, const std::string &resourceName, float volume);

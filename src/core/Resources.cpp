@@ -1,9 +1,6 @@
 #include "jengine/core/Resources.hpp"
 
-Resources::Resources() : Object()
-{
-    setName("Resources");
-}
+Resources::Resources() {}
 
 Resources::~Resources()
 {

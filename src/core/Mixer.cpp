@@ -4,10 +4,8 @@
 #include "jengine/core/Game.hpp"
 #include "jengine/core/Resources.hpp"
 
-Mixer::Mixer() : Object()
+Mixer::Mixer()
 {
-    setName("Mixer");
-
     audioDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
     if (!audioDevice)
     {

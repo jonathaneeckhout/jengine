@@ -125,7 +125,7 @@ void Game::run()
 
         auto tickEnd = std::chrono::high_resolution_clock::now();
 
-        auto duration = std::chrono::duration<float>(tickEnd - frameStart); // duration in seconds (float)
+        auto duration = std::chrono::duration<float>(tickEnd - frameStart);
         actualFPS = 1.0f / duration.count();
     }
 }
@@ -148,19 +148,12 @@ void Game::stop()
 
 void Game::input()
 {
-    physics->__input();
-    renderer->__input();
-    controls->__input();
-    resources->__input();
+    controls->input();
     rootObject->__input();
 }
 
 void Game::update(float dt)
 {
-    physics->__update(dt);
-    renderer->__update(dt);
-    controls->__update(dt);
-    resources->__update(dt);
     rootObject->__update(dt);
 }
 
@@ -168,10 +161,6 @@ void Game::output()
 {
     renderer->clear();
 
-    physics->__output();
-    renderer->__output();
-    controls->__output();
-    resources->__output();
     rootObject->__output();
 
     renderer->present();

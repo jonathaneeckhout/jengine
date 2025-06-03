@@ -5,10 +5,9 @@
 #include <string>
 #include <map>
 
-#include "jengine/basics/Object.hpp"
 #include "jengine/basics/Vector.hpp"
 
-class Renderer : public Object
+class Renderer
 {
 public:
     SDL_Window *window = nullptr;
