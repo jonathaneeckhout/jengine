@@ -149,7 +149,6 @@ void Game::stop()
 void Game::input()
 {
     controls->input();
-    rootObject->__input();
 }
 
 void Game::update(float dt)

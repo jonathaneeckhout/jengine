@@ -9,6 +9,8 @@
 #include <jengine/basics/Object.hpp>
 #include <jengine/basics/Vector.hpp>
 
+#include <jengine/components/Component.hpp>
+
 #include <jengine/entities/Entity.hpp>
 #include <jengine/entities/Body.hpp>
 

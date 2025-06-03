@@ -5,6 +5,8 @@
 #include <functional>
 #include <unordered_map>
 
+#include "jengine/components/Component.hpp"
+
 class Object
 {
 public:
@@ -12,13 +14,30 @@ public:
     virtual ~Object();
 
     const std::string &getId() const { return id; };
+
     const std::string &getName() const { return name; }
     void setName(const std::string &newName) { name = newName; }
 
+    void addComponent(Component *component);
+
     Object *getParent() const { return parent; };
+
+    template <typename T>
+    T *getComponent()
+    {
+        for (auto *comp : components)
+        {
+            if (auto *casted = dynamic_cast<T *>(comp))
+            {
+                return casted;
+            }
+        }
+        return nullptr;
+    }
 
     const std::vector<Object *> &getChildren() const { return children; };
     std::size_t getChildrenSize() { return children.size(); };
+
     Object *getChild(const std::string &childID);
     Object *getChild(const unsigned int index);
     Object *getChildByName(const std::string &name);
@@ -36,7 +55,6 @@ public:
     virtual void __init() { init(); };
     virtual void __cleanup();
 
-    void __input();
     void __update(float dt);
     void __output();
     void __checkDeleteObjects();
@@ -49,21 +67,24 @@ public:
     void removeDeleteHandler(int id);
 
 protected:
-    Object *parent = nullptr;
-    std::vector<Object *> children;
-
     bool visible = true;
 
     virtual void init() {};
     virtual void cleanup() {};
 
-    virtual void input() {};
     virtual void update(float) {};
     virtual void output() {};
 
 private:
     std::string id = "";
     std::string name = "";
+
+    std::vector<Component *> components;
+
+    Object *parent = nullptr;
+
+    std::vector<Object *> children;
+
     bool partOfGame = false;
     bool shouldDelete = false;
 

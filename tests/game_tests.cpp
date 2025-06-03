@@ -6,9 +6,10 @@
 class FakeObject : public Object
 {
 public:
-    int inputCalls = 0, updateCalls = 0, outputCalls = 0, deleteCheckCalls = 0;
+    int updateCalls = 0;
+    int outputCalls = 0;
+    int deleteCheckCalls = 0;
 
-    void input() override { inputCalls++; }
     void update(float) override { updateCalls++; }
     void output() override { outputCalls++; }
 };
@@ -30,19 +31,6 @@ TEST(GameTest, SetFPSUpdatesValue)
 {
     Game *game = Game::getInstance();
     game->setFPS(120.0f);
-
-    Game::deleteInstance();
-}
-
-TEST(GameTest, SetRootObjectAndInvokeInputCallsFake)
-{
-    FakeObject *fake = new FakeObject();
-    Game *game = Game::getInstance();
-    game->setRootObject(fake);
-
-    game->__tick(1.0f);
-
-    EXPECT_EQ(fake->inputCalls, 1);
 
     Game::deleteInstance();
 }

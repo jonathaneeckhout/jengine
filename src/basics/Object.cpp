@@ -12,6 +12,17 @@ Object::~Object()
     {
         delete child;
     }
+
+    for (auto &component : components)
+    {
+        delete component;
+    }
+}
+
+void Object::addComponent(Component *component)
+{
+    component->onAddedToObject(this);
+    components.push_back(component);
 }
 
 Object *Object::getChild(const std::string &childID)
@@ -132,19 +143,6 @@ void Object::__cleanup()
     cleanup();
 
     invokeDeleteHandlers();
-}
-
-void Object::__input()
-{
-    input();
-
-    for (const auto &child : children)
-    {
-        if (child)
-        {
-            child->__input();
-        }
-    }
 }
 
 void Object::__update(float dt)

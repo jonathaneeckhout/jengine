@@ -17,6 +17,7 @@ void Entity::setPosition(Vector newPosition)
 
 void Entity::__update_global_position()
 {
+    auto parent = getParent();
     if (parent != nullptr)
     {
         if (Entity *parentEntity = dynamic_cast<Entity *>(parent))
@@ -33,7 +34,7 @@ void Entity::__update_global_position()
         globalPosition = position;
     }
 
-    for (const auto &child : children)
+    for (const auto &child : getChildren())
     {
         if (Entity *childEntity = dynamic_cast<Entity *>(child))
         {
