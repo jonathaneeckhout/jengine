@@ -127,6 +127,13 @@ void Object::__removeFromGame()
     }
 }
 
+void Object::__cleanup()
+{
+    cleanup();
+
+    invokeDeleteHandlers();
+}
+
 void Object::__input()
 {
     input();
@@ -197,5 +204,25 @@ void Object::__checkDeleteObjects()
         delete child;
 
         child = nullptr;
+    }
+}
+
+int Object::addDeleteHandler(std::function<void()> handler)
+{
+    int id = nextdeleteHandlerId++;
+    deleteHandlers[id] = std::move(handler);
+    return id;
+}
+
+void Object::removeDeleteHandler(int id)
+{
+    deleteHandlers.erase(id);
+}
+
+void Object::invokeDeleteHandlers()
+{
+    for (const auto &[id, handler] : deleteHandlers)
+    {
+        handler();
     }
 }

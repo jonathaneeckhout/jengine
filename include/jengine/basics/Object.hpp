@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <functional>
+#include <unordered_map>
 
 class Object
 {
@@ -32,7 +34,7 @@ public:
     bool isPartOfGame() { return partOfGame; };
 
     virtual void __init() { init(); };
-    virtual void __cleanup() { cleanup(); };
+    virtual void __cleanup();
 
     void __input();
     void __update(float dt);
@@ -42,6 +44,9 @@ public:
 
     void setVisible(bool value) { visible = value; };
     bool isVisible() { return visible; };
+
+    int addDeleteHandler(std::function<void()> handler);
+    void removeDeleteHandler(int id);
 
 protected:
     Object *parent = nullptr;
@@ -61,4 +66,9 @@ private:
     std::string name = "";
     bool partOfGame = false;
     bool shouldDelete = false;
+
+    int nextdeleteHandlerId = 1;
+    std::unordered_map<int, std::function<void()>> deleteHandlers;
+
+    void invokeDeleteHandlers();
 };
