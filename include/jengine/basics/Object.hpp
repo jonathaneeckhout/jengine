@@ -56,6 +56,7 @@ public:
     virtual void __cleanup();
 
     void __update(float dt);
+    void __sync(bool shouldDirty);
     void __output();
     void __checkDeleteObjects();
     bool __queuedForDeletion() { return shouldDelete; };
@@ -73,6 +74,7 @@ protected:
     virtual void cleanup() {};
 
     virtual void update(float) {};
+    virtual void sync(bool) {};
     virtual void output() {};
 
 private:
@@ -84,6 +86,8 @@ private:
     Object *parent = nullptr;
 
     std::vector<Object *> children;
+
+    bool dirty = true;
 
     bool partOfGame = false;
     bool shouldDelete = false;

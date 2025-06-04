@@ -15,6 +15,8 @@ public:
 
     const Vector &getGlobalPosition() const { return globalPosition; };
 
+    void sync(bool shouldDirty) override;
+
 private:
     Vector position;
     Vector globalPosition;

@@ -1,5 +1,10 @@
 #pragma once
 
 #include <string>
-
-std::string generate_uuid();
+namespace jengine
+{
+    namespace utils
+    {
+        std::string generate_uuid();
+    }
+}

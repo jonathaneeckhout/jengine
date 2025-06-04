@@ -4,7 +4,10 @@
 #include "jengine/components/TransformComponent.hpp"
 #include "jengine/core/Game.hpp"
 
-PhysicsComponent::PhysicsComponent(CollisionShape *collisionShape) : collisionShape(collisionShape) {}
+PhysicsComponent::PhysicsComponent(TransformComponent *transform, CollisionShape *collisionShape) : transform(transform), collisionShape(collisionShape)
+{
+    assert(transform != nullptr && "Missing transform component");
+}
 
 PhysicsComponent::~PhysicsComponent()
 {
@@ -16,10 +19,6 @@ PhysicsComponent::~PhysicsComponent()
 
 void PhysicsComponent::moveAndStop(float dt)
 {
-    auto transform = owner->getComponent<TransformComponent>();
-
-    assert(transform != nullptr && "Missing transform component");
-
     Vector newPosition = transform->getPosition() + transform->velocity * dt;
 
     if (collisionShape == nullptr)

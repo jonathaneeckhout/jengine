@@ -136,6 +136,8 @@ void Game::__tick(float dt)
 
     update(dt);
 
+    sync();
+
     output();
 
     checkDeleteObjects();
@@ -154,6 +156,11 @@ void Game::input()
 void Game::update(float dt)
 {
     rootObject->__update(dt);
+}
+
+void Game::sync()
+{
+    rootObject->__sync(false);
 }
 
 void Game::output()

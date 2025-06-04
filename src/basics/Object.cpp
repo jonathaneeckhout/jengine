@@ -4,7 +4,7 @@
 #include "jengine/utils/uuid.hpp"
 #include "jengine/core/Game.hpp"
 
-Object::Object() : id(generate_uuid()) {}
+Object::Object() : id(jengine::utils::generate_uuid()) {}
 
 Object::~Object()
 {
@@ -149,12 +149,31 @@ void Object::__update(float dt)
 {
     update(dt);
 
+    for (const auto &component : components)
+    {
+        component->update(dt);
+    }
+
     for (const auto &child : children)
     {
-        if (child)
-        {
-            child->__update(dt);
-        }
+        child->__update(dt);
+    }
+}
+
+void Object::__sync(bool shouldDirty)
+{
+    dirty |= shouldDirty;
+
+    sync(dirty);
+
+    for (const auto &component : components)
+    {
+        component->sync(dirty);
+    }
+
+    for (const auto &child : children)
+    {
+        child->__sync(dirty);
     }
 }
 
@@ -167,12 +186,14 @@ void Object::__output()
 
     output();
 
+    for (const auto &component : components)
+    {
+        component->output();
+    }
+
     for (const auto &child : children)
     {
-        if (child)
-        {
-            child->__output();
-        }
+        child->__output();
     }
 }
 

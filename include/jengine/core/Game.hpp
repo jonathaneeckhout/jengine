@@ -83,6 +83,7 @@ private:
 
     void input();
     void update(float dt);
+    void sync();
     void output();
     void checkDeleteObjects();
 };

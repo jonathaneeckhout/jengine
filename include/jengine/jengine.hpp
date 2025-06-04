@@ -10,11 +10,18 @@
 #include <jengine/basics/Vector.hpp>
 
 #include <jengine/components/Component.hpp>
+#include <jengine/components/TransformComponent.hpp>
+#include <jengine/components/PhysicsComponent.hpp>
+#include <jengine/components/SquareComponent.hpp>
+#include <jengine/components/TimerComponent.hpp>
+
+#include <jengine/Visuals.hpp>
 
 #include <jengine/entities/Entity.hpp>
 #include <jengine/entities/Body.hpp>
 
 #include <jengine/utils/uuid.hpp>
+#include <jengine/utils/Timer.hpp>
 
 #include <jengine/visuals/Visual.hpp>
 #include <jengine/visuals/Square.hpp>
