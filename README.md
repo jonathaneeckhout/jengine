@@ -6,7 +6,7 @@ A small 2D c++ game engine used for learning purposes.
 ## Requirements
 
 - CMake ≥ 3.16
-- C++17 compiler (`clang++`)
+- C++20 compiler (`clang++`)
 
 Example using Ubuntu
 ```bash

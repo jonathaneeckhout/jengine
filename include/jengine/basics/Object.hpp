@@ -5,7 +5,7 @@
 #include <functional>
 #include <unordered_map>
 
-#include "jengine/components/Component.hpp"
+#include "jengine/basics/Component.hpp"
 
 class Object
 {
@@ -57,7 +57,9 @@ public:
 
     void __update(float dt);
     void __sync(bool shouldDirty);
+    void __physics(float dt);
     void __output();
+
     void __checkDeleteObjects();
     bool __queuedForDeletion() { return shouldDelete; };
 
@@ -75,6 +77,7 @@ protected:
 
     virtual void update(float) {};
     virtual void sync(bool) {};
+    virtual void physics(float) {};
     virtual void output() {};
 
 private:

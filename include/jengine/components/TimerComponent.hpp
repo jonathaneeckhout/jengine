@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "jengine/components/Component.hpp"
+#include "jengine/basics/Component.hpp"
 
 class TimerComponent : public Component
 {

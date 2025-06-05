@@ -81,9 +81,10 @@ private:
 
     Game();
 
-    void input();
-    void update(float dt);
-    void sync();
-    void output();
-    void checkDeleteObjects();
+    void __input();
+    void __update(float dt);
+    void __sync();
+    void __physics(float dt);
+    void __output();
+    void __checkDeleteObjects();
 };

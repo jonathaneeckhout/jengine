@@ -9,8 +9,12 @@ public:
 
     virtual void update(float) {}
     virtual void sync(bool) {}
+    virtual void physics(float) {}
     virtual void output() {}
     virtual void onAddedToObject(Object *obj) { owner = obj; }
+
+    virtual void addToGame() {};
+    virtual void removeFromGame() {};
 
 protected:
     Object *owner = nullptr;

@@ -132,15 +132,17 @@ void Game::run()
 
 void Game::__tick(float dt)
 {
-    input();
+    __input();
 
-    update(dt);
+    __update(dt);
 
-    sync();
+    __sync();
 
-    output();
+    __physics(dt);
 
-    checkDeleteObjects();
+    __output();
+
+    __checkDeleteObjects();
 }
 
 void Game::stop()
@@ -148,22 +150,29 @@ void Game::stop()
     running = false;
 }
 
-void Game::input()
+void Game::__input()
 {
     controls->input();
 }
 
-void Game::update(float dt)
+void Game::__update(float dt)
 {
     rootObject->__update(dt);
 }
 
-void Game::sync()
+void Game::__sync()
 {
     rootObject->__sync(false);
 }
 
-void Game::output()
+void Game::__physics(float dt)
+{
+    rootObject->__physics(dt);
+
+    physics->physics(dt);
+}
+
+void Game::__output()
 {
     renderer->clear();
 
@@ -172,7 +181,7 @@ void Game::output()
     renderer->present();
 }
 
-void Game::checkDeleteObjects()
+void Game::__checkDeleteObjects()
 {
     if (oldRootObject != nullptr)
     {

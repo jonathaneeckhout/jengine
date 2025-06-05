@@ -2,7 +2,7 @@
 
 #include <SDL3/SDL.h>
 
-#include "jengine/components/Component.hpp"
+#include "jengine/basics/Component.hpp"
 #include "jengine/components/TransformComponent.hpp"
 #include "jengine/basics/Vector.hpp"
 

@@ -23,6 +23,11 @@ void Object::addComponent(Component *component)
 {
     component->onAddedToObject(this);
     components.push_back(component);
+
+    if (isPartOfGame())
+    {
+        component->addToGame();
+    }
 }
 
 Object *Object::getChild(const std::string &childID)
@@ -122,6 +127,11 @@ void Object::__addToGame()
 {
     partOfGame = true;
 
+    for (const auto &component : components)
+    {
+        component->addToGame();
+    }
+
     for (const auto &child : children)
     {
         child->__addToGame();
@@ -131,6 +141,11 @@ void Object::__addToGame()
 void Object::__removeFromGame()
 {
     partOfGame = false;
+
+    for (const auto &component : components)
+    {
+        component->removeFromGame();
+    }
 
     for (const auto &child : children)
     {
@@ -174,6 +189,21 @@ void Object::__sync(bool shouldDirty)
     for (const auto &child : children)
     {
         child->__sync(dirty);
+    }
+}
+
+void Object::__physics(float dt)
+{
+    physics(dt);
+
+    for (const auto &component : components)
+    {
+        component->physics(dt);
+    }
+
+    for (const auto &child : children)
+    {
+        child->__physics(dt);
     }
 }
 

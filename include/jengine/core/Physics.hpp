@@ -1,9 +1,7 @@
 #pragma once
-#include <string>
-#include <unordered_map>
 #include <vector>
 
-#include "jengine/collision/CollisionShape.hpp"
+#include "jengine/components/CollisionComponent.hpp"
 
 class Physics
 {
@@ -11,11 +9,13 @@ public:
     Physics();
     ~Physics();
 
-    bool addCollisionShape(CollisionShape *shape);
-    bool removeCollisionShape(const std::string &id);
+    void physics(float dt);
 
-    std::vector<CollisionShape *> checkCollision(const CollisionShape &shape);
+    void registerCollider(CollisionComponent *collider);
+    void unregisterCollider(CollisionComponent *comp);
+
+    const std::vector<CollisionComponent *> &getColliders() { return colliders; };
 
 private:
-    std::unordered_map<std::string, CollisionShape *> collisionShapes;
+    std::vector<CollisionComponent *> colliders;
 };

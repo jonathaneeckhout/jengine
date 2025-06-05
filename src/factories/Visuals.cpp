@@ -1,4 +1,4 @@
-#include "jengine/Visuals.hpp"
+#include "jengine/factories/Visuals.hpp"
 #include "jengine/basics/Object.hpp"
 #include "jengine/components/TransformComponent.hpp"
 #include "jengine/components/SquareComponent.hpp"

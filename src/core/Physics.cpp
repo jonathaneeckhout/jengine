@@ -4,50 +4,20 @@ Physics::Physics() {}
 
 Physics::~Physics() {}
 
-bool Physics::addCollisionShape(CollisionShape *shape)
+void Physics::physics(float)
 {
-    if (shape == nullptr)
+    for (auto *collider : colliders)
     {
-        return false;
+        collider->checkCollisions(colliders);
     }
-
-    auto id = shape->getId();
-
-    collisionShapes[id] = shape;
-
-    return true;
 }
 
-bool Physics::removeCollisionShape(const std::string &id)
+void Physics::registerCollider(CollisionComponent *collider)
 {
-    auto it = collisionShapes.find(id);
-
-    if (it == collisionShapes.end())
-    {
-        return false;
-    }
-
-    collisionShapes.erase(it);
-
-    return true;
+    colliders.push_back(collider);
 }
 
-std::vector<CollisionShape *> Physics::checkCollision(const CollisionShape &shape)
+void Physics::unregisterCollider(CollisionComponent *collider)
 {
-    std::vector<CollisionShape *> collisions;
-
-    for (const auto &collider : collisionShapes)
-    {
-        if (collider.second == &shape)
-        {
-            continue;
-        }
-
-        if (shape.collidesWith(*collider.second))
-        {
-            collisions.push_back(collider.second);
-        }
-    }
-
-    return collisions;
+    colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
 }

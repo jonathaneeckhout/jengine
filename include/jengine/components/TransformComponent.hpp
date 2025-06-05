@@ -1,6 +1,6 @@
 #pragma once
 
-#include "jengine/components/Component.hpp"
+#include "jengine/basics/Component.hpp"
 #include "jengine/basics/Vector.hpp"
 
 class TransformComponent : public Component
@@ -13,11 +13,13 @@ public:
     const Vector &getPosition() const { return position; };
     void setPosition(Vector newPosition);
 
-    const Vector &getGlobalPosition() const { return globalPosition; };
+    const Vector &getGlobalPosition();
 
     void sync(bool shouldDirty) override;
 
 private:
     Vector position;
     Vector globalPosition;
+
+    void updateGlobalPosition();
 };

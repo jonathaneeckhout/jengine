@@ -12,26 +12,44 @@ void TransformComponent::setPosition(Vector newPosition)
 void TransformComponent::sync(bool shouldDirty)
 {
     dirty |= shouldDirty;
+
+    if (!dirty)
+    {
+        return;
+    }
+
+    updateGlobalPosition();
+}
+
+const Vector &TransformComponent::getGlobalPosition()
+{
     if (dirty)
     {
-        dirty = false;
+        updateGlobalPosition();
+    }
 
-        auto parent = owner->getParent();
-        if (parent == nullptr)
+    return globalPosition;
+};
+
+void TransformComponent::updateGlobalPosition()
+{
+    dirty = false;
+
+    auto parent = owner->getParent();
+    if (parent == nullptr)
+    {
+        globalPosition = position;
+    }
+    else
+    {
+        auto parentTransform = parent->getComponent<TransformComponent>();
+        if (parentTransform == nullptr)
         {
             globalPosition = position;
         }
         else
         {
-            auto parentTransform = parent->getComponent<TransformComponent>();
-            if (parentTransform == nullptr)
-            {
-                globalPosition = position;
-            }
-            else
-            {
-                globalPosition = parentTransform->getGlobalPosition() + position;
-            }
+            globalPosition = parentTransform->getGlobalPosition() + position;
         }
     }
 }
