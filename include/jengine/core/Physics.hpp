@@ -16,6 +16,8 @@ public:
 
     const std::vector<CollisionComponent *> &getColliders() { return colliders; };
 
+    std::vector<CollisionComponent *> checkCollision(const CollisionComponent &collision);
+
 private:
     std::vector<CollisionComponent *> colliders;
 };

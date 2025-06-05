@@ -13,6 +13,7 @@
 #include <jengine/components/PhysicsComponent.hpp>
 #include <jengine/components/SquareCollisionComponent.hpp>
 #include <jengine/components/SquareComponent.hpp>
+#include <jengine/components/TextComponent.hpp>
 #include <jengine/components/TimerComponent.hpp>
 #include <jengine/components/TransformComponent.hpp>
 
