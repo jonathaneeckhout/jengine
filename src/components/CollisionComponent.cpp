@@ -1,15 +1,24 @@
 #include "jengine/components/CollisionComponent.hpp"
 #include "jengine/core/Game.hpp"
 
-CollisionComponent::CollisionComponent(TransformComponent *transform) : transform(transform) {}
-
-void CollisionComponent::addToGame()
+CollisionComponent::CollisionComponent(TransformComponent *transform) : transform(transform)
 {
+    setName("CollisionComponent");
+
+    events.createEvent<Object *, bool>("onCollision");
+}
+
+void CollisionComponent::__addToGame()
+{
+    Object::__addToGame();
+
     Game::getInstance()->physics->registerCollider(this);
 }
 
-void CollisionComponent::removeFromGame()
+void CollisionComponent::__removeFromGame()
 {
+    Object::__removeFromGame();
+
     Game::getInstance()->physics->unregisterCollider(this);
 }
 
@@ -29,7 +38,7 @@ void CollisionComponent::checkCollisions(const std::vector<CollisionComponent *>
 
             if (!previousCollisions.contains(other))
             {
-                invokeCollisionHandlers(other, true);
+                events.trigger("onCollision", other->getParent(), true);
             }
         }
     }
@@ -38,28 +47,7 @@ void CollisionComponent::checkCollisions(const std::vector<CollisionComponent *>
     {
         if (!currentCollisions.contains(prev))
         {
-            invokeCollisionHandlers(prev, false);
+            events.trigger("onCollision", prev->getParent(), false);
         }
-    }
-}
-
-int CollisionComponent::addCollisionHandler(std::function<void(Object *object, bool collides)> handler)
-{
-    int id = nextHandlerId++;
-    collisionHandlers[id] = std::move(handler);
-    return id;
-}
-
-void CollisionComponent::removeCollisionHandler(int id)
-{
-    collisionHandlers.erase(id);
-}
-
-void CollisionComponent::invokeCollisionHandlers(CollisionComponent *collider, bool collides)
-{
-
-    for (const auto &[id, handler] : collisionHandlers)
-    {
-        handler(collider->owner, collides);
     }
 }

@@ -10,12 +10,13 @@ namespace jengine
         Object *createSquare(Vector position, Vector size, SDL_Color color)
         {
             auto obj = new Object();
+            obj->setName("Square");
 
             auto transform = new TransformComponent(position);
-            obj->addComponent(transform);
+            obj->addChild(transform);
 
             auto square = new SquareComponent(transform, size, color);
-            obj->addComponent(square);
+            obj->addChild(square);
 
             return obj;
         }

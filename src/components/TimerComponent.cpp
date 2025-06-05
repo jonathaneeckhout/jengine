@@ -8,7 +8,10 @@ TimerComponent::TimerComponent(
     : timeout(timeout),
       restart(restart),
       callback(callback),
-      userdata(userdata) {}
+      userdata(userdata)
+{
+    setName("TimerComponent");
+}
 
 void TimerComponent::update(float dt)
 {

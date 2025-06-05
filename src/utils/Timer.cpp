@@ -12,7 +12,7 @@ namespace jengine
             auto obj = new Object();
 
             auto timer = new TimerComponent(timeout, restart, callback, userdata);
-            obj->addComponent(timer);
+            obj->addChild(timer);
 
             return obj;
         }

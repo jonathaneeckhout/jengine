@@ -1,7 +1,10 @@
 #include <jengine/basics/Object.hpp>
 #include "jengine/components/TransformComponent.hpp"
 
-TransformComponent::TransformComponent(Vector position, Vector velocity) : velocity(velocity), position(position) {}
+TransformComponent::TransformComponent(Vector position, Vector velocity) : velocity(velocity), position(position)
+{
+    setName("TransformComponent");
+}
 
 void TransformComponent::setPosition(Vector newPosition)
 {
@@ -35,14 +38,14 @@ void TransformComponent::updateGlobalPosition()
 {
     dirty = false;
 
-    auto parent = owner->getParent();
+    auto parent = getParent()->getParent();
     if (parent == nullptr)
     {
         globalPosition = position;
     }
     else
     {
-        auto parentTransform = parent->getComponent<TransformComponent>();
+        auto parentTransform = parent->getChild<TransformComponent>();
         if (parentTransform == nullptr)
         {
             globalPosition = position;

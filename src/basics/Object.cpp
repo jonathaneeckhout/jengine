@@ -4,29 +4,16 @@
 #include "jengine/utils/uuid.hpp"
 #include "jengine/core/Game.hpp"
 
-Object::Object() : id(jengine::utils::generate_uuid()) {}
+Object::Object() : id(jengine::utils::generate_uuid())
+{
+    events.createEvent<>("onDeleted");
+}
 
 Object::~Object()
 {
     for (auto &child : children)
     {
         delete child;
-    }
-
-    for (auto &component : components)
-    {
-        delete component;
-    }
-}
-
-void Object::addComponent(Component *component)
-{
-    component->onAddedToObject(this);
-    components.push_back(component);
-
-    if (isPartOfGame())
-    {
-        component->addToGame();
     }
 }
 
@@ -127,11 +114,6 @@ void Object::__addToGame()
 {
     partOfGame = true;
 
-    for (const auto &component : components)
-    {
-        component->addToGame();
-    }
-
     for (const auto &child : children)
     {
         child->__addToGame();
@@ -141,11 +123,6 @@ void Object::__addToGame()
 void Object::__removeFromGame()
 {
     partOfGame = false;
-
-    for (const auto &component : components)
-    {
-        component->removeFromGame();
-    }
 
     for (const auto &child : children)
     {
@@ -157,17 +134,24 @@ void Object::__cleanup()
 {
     cleanup();
 
-    invokeDeleteHandlers();
+    events.trigger("onDeleted");
+}
+
+void Object::__input()
+{
+    input();
+
+    events.processAll();
+
+    for (const auto &child : children)
+    {
+        child->__input();
+    }
 }
 
 void Object::__update(float dt)
 {
     update(dt);
-
-    for (const auto &component : components)
-    {
-        component->update(dt);
-    }
 
     for (const auto &child : children)
     {
@@ -181,11 +165,6 @@ void Object::__sync(bool shouldDirty)
 
     sync(dirty);
 
-    for (const auto &component : components)
-    {
-        component->sync(dirty);
-    }
-
     for (const auto &child : children)
     {
         child->__sync(dirty);
@@ -195,11 +174,6 @@ void Object::__sync(bool shouldDirty)
 void Object::__physics(float dt)
 {
     physics(dt);
-
-    for (const auto &component : components)
-    {
-        component->physics(dt);
-    }
 
     for (const auto &child : children)
     {
@@ -215,11 +189,6 @@ void Object::__output()
     }
 
     output();
-
-    for (const auto &component : components)
-    {
-        component->output();
-    }
 
     for (const auto &child : children)
     {
@@ -253,25 +222,5 @@ void Object::__checkDeleteObjects()
         delete child;
 
         child = nullptr;
-    }
-}
-
-int Object::addDeleteHandler(std::function<void()> handler)
-{
-    int id = nextdeleteHandlerId++;
-    deleteHandlers[id] = std::move(handler);
-    return id;
-}
-
-void Object::removeDeleteHandler(int id)
-{
-    deleteHandlers.erase(id);
-}
-
-void Object::invokeDeleteHandlers()
-{
-    for (const auto &[id, handler] : deleteHandlers)
-    {
-        handler();
     }
 }

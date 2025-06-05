@@ -6,12 +6,13 @@
 
 PhysicsComponent::PhysicsComponent(TransformComponent *transform) : transform(transform)
 {
+    setName("PhysicsComponent");
+
     assert(transform != nullptr && "Missing transform component");
 }
 
 PhysicsComponent::~PhysicsComponent()
 {
-
 }
 
 void PhysicsComponent::moveAndStop(float dt)

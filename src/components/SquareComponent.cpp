@@ -5,6 +5,8 @@
 
 SquareComponent::SquareComponent(TransformComponent *transform, Vector size, SDL_Color color) : transform(transform), size(size), color(color)
 {
+    setName("SquareComponent");
+
     assert(transform != nullptr && "Missing transform component");
 }
 

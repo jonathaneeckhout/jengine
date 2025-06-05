@@ -7,7 +7,6 @@
 #include <jengine/core/Resources.hpp>
 
 #include <jengine/basics/Object.hpp>
-#include <jengine/basics/Component.hpp>
 #include <jengine/basics/Vector.hpp>
 
 #include <jengine/components/CollisionComponent.hpp>

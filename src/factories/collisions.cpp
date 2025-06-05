@@ -9,12 +9,13 @@ namespace jengine
         Object *createSquareCollision(Vector position, Vector size)
         {
             auto obj = new Object();
+            obj->setName("SquareCollision");
 
             auto transform = new TransformComponent(position);
-            obj->addComponent(transform);
+            obj->addChild(transform);
 
             auto collision = new SquareCollisionComponent(transform, size);
-            obj->addComponent(collision);
+            obj->addChild(collision);
 
             return obj;
         }

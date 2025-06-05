@@ -1,9 +1,9 @@
 #pragma once
 
-#include "jengine/basics/Component.hpp"
+#include "jengine/basics/Object.hpp"
 #include "jengine/basics/Vector.hpp"
 
-class TransformComponent : public Component
+class TransformComponent : public Object
 {
 public:
     Vector velocity;

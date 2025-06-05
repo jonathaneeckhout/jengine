@@ -1,9 +1,9 @@
 #pragma once
 
-#include "jengine/basics/Component.hpp"
+#include "jengine/basics/Object.hpp"
 #include "jengine/components/TransformComponent.hpp"
 
-    class PhysicsComponent : public Component
+    class PhysicsComponent : public Object
 {
 public:
     PhysicsComponent(TransformComponent *transform);

@@ -2,9 +2,9 @@
 
 #include <functional>
 
-#include "jengine/basics/Component.hpp"
+#include "jengine/basics/Object.hpp"
 
-class TimerComponent : public Component
+class TimerComponent : public Object
 {
 public:
     TimerComponent(
