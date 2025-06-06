@@ -135,6 +135,13 @@ void Object::__cleanup()
     cleanup();
 
     events.trigger("onDeleted");
+
+    events.processAll();
+
+    for (const auto &child : children)
+    {
+        child->__cleanup();
+    }
 }
 
 void Object::__input()
@@ -215,9 +222,9 @@ void Object::__checkDeleteObjects()
 
     for (Object *child : toDelete)
     {
-        removeChild(child);
-
         child->__cleanup();
+
+        removeChild(child);
 
         delete child;
 

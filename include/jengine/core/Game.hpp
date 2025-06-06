@@ -83,8 +83,8 @@ private:
 
     void __input();
     void __update(float dt);
+    void __checkDeleteObjects();
     void __sync();
     void __physics(float dt);
     void __output();
-    void __checkDeleteObjects();
 };

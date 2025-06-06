@@ -136,13 +136,13 @@ void Game::__tick(float dt)
 
     __update(dt);
 
+    __checkDeleteObjects();
+
     __sync();
 
     __physics(dt);
 
     __output();
-
-    __checkDeleteObjects();
 }
 
 void Game::stop()
@@ -160,6 +160,22 @@ void Game::__input()
 void Game::__update(float dt)
 {
     rootObject->__update(dt);
+}
+
+void Game::__checkDeleteObjects()
+{
+    if (oldRootObject != nullptr)
+    {
+        oldRootObject->__cleanup();
+
+        oldRootObject->__removeFromGame();
+
+        delete oldRootObject;
+
+        oldRootObject = nullptr;
+    }
+
+    rootObject->__checkDeleteObjects();
 }
 
 void Game::__sync()
@@ -181,22 +197,6 @@ void Game::__output()
     rootObject->__output();
 
     renderer->present();
-}
-
-void Game::__checkDeleteObjects()
-{
-    if (oldRootObject != nullptr)
-    {
-        oldRootObject->__removeFromGame();
-
-        oldRootObject->__cleanup();
-
-        delete oldRootObject;
-
-        oldRootObject = nullptr;
-    }
-
-    rootObject->__checkDeleteObjects();
 }
 
 void Game::setRootObject(Object *object)
