@@ -17,7 +17,7 @@ bool SquareCollisionComponent::collidesWith(const CollisionComponent &other) con
 
 bool SquareCollisionComponent::collidesWithSquare(const SquareCollisionComponent &square) const
 {
-    Vector aPos = transform->getGlobalPosition();
+    Vector aPos = center ? transform->getGlobalPosition() - size/2 : transform->getGlobalPosition();
     Vector aSize = size;
     Vector bPos = square.transform->getGlobalPosition();
     Vector bSize = square.size;

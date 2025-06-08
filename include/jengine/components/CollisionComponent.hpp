@@ -14,6 +14,7 @@ class CollisionComponent : public Object
 public:
     uint32_t inLayer = 0x00000001;
     uint32_t viewLayer = 0x00000001;
+    bool center = false;
 
     TransformComponent *transform = nullptr;
 
