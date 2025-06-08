@@ -27,10 +27,7 @@ namespace jengine
             auto obj = new Object();
             obj->setName("Label");
 
-            auto transform = new TransformComponent(position);
-            obj->addChild(transform);
-
-            auto textComponent = new TextComponent(transform, text, size, resourceName);
+            auto textComponent = new TextComponent(position, text, size, resourceName);
             obj->addChild(textComponent);
 
             return obj;

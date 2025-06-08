@@ -12,7 +12,7 @@ class TextComponent : public Object
 public:
     bool centered = false;
 
-    TextComponent(TransformComponent *transform, const std::string &text, unsigned int size, const std::string &resourceName);
+    TextComponent(Vector position, const std::string &text, unsigned int size, const std::string &resourceName);
     ~TextComponent();
 
     void output() override;

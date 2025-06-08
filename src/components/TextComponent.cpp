@@ -2,12 +2,14 @@
 #include "jengine/core/Game.hpp"
 
 TextComponent::TextComponent(
-    TransformComponent *transform,
+    Vector position,
     const std::string &text,
     unsigned int size,
     const std::string &resourceName)
-    : transform(transform)
 {
+    transform =  new TransformComponent(position);
+    addChild(transform);
+
     auto fontIO = Game::getInstance()->resources->getResource(resourceName);
     if (fontIO == nullptr)
     {
