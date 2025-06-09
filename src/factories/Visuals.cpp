@@ -10,16 +10,7 @@ namespace jengine
     {
         Object *createSquare(Vector position, Vector size, SDL_Color color)
         {
-            auto obj = new Object();
-            obj->setName("Square");
-
-            auto transform = new TransformComponent(position);
-            obj->addChild(transform);
-
-            auto square = new SquareComponent(transform, size, color);
-            obj->addChild(square);
-
-            return obj;
+            return new SquareComponent(position, size, color);
         }
 
         Object *createLabel(Vector position, const std::string &text, unsigned int size, const std::string &resourceName)

@@ -3,11 +3,12 @@
 #include "jengine/components/SquareComponent.hpp"
 #include "jengine/core/Game.hpp"
 
-SquareComponent::SquareComponent(TransformComponent *transform, Vector size, SDL_Color color) : transform(transform), size(size), color(color)
+SquareComponent::SquareComponent(Vector position, Vector size, SDL_Color color) : size(size), color(color)
 {
     setName("SquareComponent");
 
-    assert(transform != nullptr && "Missing transform component");
+    transform = new TransformComponent(position);
+    addChild(transform);
 }
 
 void SquareComponent::output()

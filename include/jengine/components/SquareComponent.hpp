@@ -9,7 +9,7 @@
 class SquareComponent : public Object
 {
 public:
-    SquareComponent(TransformComponent *transform, Vector size = {32.0, 32.0}, SDL_Color color = {255, 255, 255, 255});
+    SquareComponent(Vector position, Vector size = {32.0, 32.0}, SDL_Color color = {255, 255, 255, 255});
 
     void setSize(Vector newSize) { size = newSize; };
 

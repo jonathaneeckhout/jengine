@@ -1,4 +1,5 @@
 #include "jengine/components/TextButtonComponent.hpp"
+#include "jengine/components/TransformComponent.hpp"
 
 TextButtonComponent::TextButtonComponent(
     Vector position,
@@ -7,10 +8,13 @@ TextButtonComponent::TextButtonComponent(
     unsigned int textSize,
     const std::string &textResourceName)
 {
-    buttonComp = new ButtonComponent(position, size);
+    auto transform = new TransformComponent(position);
+    addChild(transform);
+
+    buttonComp = new ButtonComponent(Vector(), size);
     addChild(buttonComp);
 
-    textComp = new TextComponent(position - size / 2, text, textSize, textResourceName);
+    textComp = new TextComponent(size / 2, text, textSize, textResourceName);
     textComp->centered = true;
     addChild(textComp);
 

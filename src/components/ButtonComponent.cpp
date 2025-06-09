@@ -7,8 +7,13 @@ ButtonComponent::ButtonComponent(Vector position, Vector size) : size(size)
     TransformComponent *transform = new TransformComponent(position);
     addChild(transform);
 
+    button = new SquareComponent(position, size);
+    addChild(button);
+
     events.createEvent<>("onPressed");
     events.createEvent<>("onReleased");
+
+    updateColor();
 }
 
 void ButtonComponent::setIdle()

@@ -9,10 +9,12 @@
 #include <jengine/basics/Object.hpp>
 #include <jengine/basics/Vector.hpp>
 
+#include <jengine/components/ButtonComponent.hpp>
 #include <jengine/components/CollisionComponent.hpp>
 #include <jengine/components/PhysicsComponent.hpp>
 #include <jengine/components/SquareCollisionComponent.hpp>
 #include <jengine/components/SquareComponent.hpp>
+#include <jengine/components/TextButtonComponent.hpp>
 #include <jengine/components/TextComponent.hpp>
 #include <jengine/components/TimerComponent.hpp>
 #include <jengine/components/TransformComponent.hpp>
