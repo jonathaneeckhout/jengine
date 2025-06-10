@@ -17,7 +17,12 @@ public:
 
     void output() override;
 
+    void setCentered(bool center);
+
 private:
+    Vector position;
+    bool centered = false;
+
     TransformComponent *transform = nullptr;
 
     Vector size;

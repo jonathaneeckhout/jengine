@@ -1,9 +1,12 @@
 #include "jengine/components/CollisionComponent.hpp"
 #include "jengine/core/Game.hpp"
 
-CollisionComponent::CollisionComponent(TransformComponent *transform) : transform(transform)
+CollisionComponent::CollisionComponent(Vector position) : position(position)
 {
     setName("CollisionComponent");
+
+    transform = new TransformComponent(position);
+    addChild(transform);
 
     events.createEvent<Object *, bool>("onCollision");
 }

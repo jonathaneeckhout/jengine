@@ -14,11 +14,10 @@ class CollisionComponent : public Object
 public:
     uint32_t inLayer = 0x00000001;
     uint32_t viewLayer = 0x00000001;
-    bool center = false;
 
     TransformComponent *transform = nullptr;
 
-    CollisionComponent(TransformComponent *transform);
+    CollisionComponent(Vector position);
 
     void __addToGame() override;
     void __removeFromGame() override;
@@ -27,6 +26,12 @@ public:
     virtual bool collidesWithSquare(const class SquareCollisionComponent &square) const = 0;
 
     void checkCollisions(const std::vector<CollisionComponent *> &allColliders);
+
+    virtual void setCentered(bool center) = 0;
+
+protected:
+    Vector position;
+    bool centered = false;
 
 private:
     std::unordered_set<CollisionComponent *> currentCollisions;

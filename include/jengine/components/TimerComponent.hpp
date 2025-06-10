@@ -7,11 +7,7 @@
 class TimerComponent : public Object
 {
 public:
-    TimerComponent(
-        float timeout = 1.0,
-        bool restart = false,
-        std::function<void(void *)> callback = nullptr,
-        void *userdata = nullptr);
+    TimerComponent(float timeout = 1.0, bool restart = false);
 
     void update(float dt) override;
 
@@ -19,7 +15,6 @@ public:
 
     void setTimeout(float newTimeout) { timeout = newTimeout; };
     void setRestart(bool shouldRestart) { restart = shouldRestart; };
-    void setCallback(std::function<void(void *)> cb, void *data = nullptr);
 
     void start();
     void stop();
@@ -30,7 +25,4 @@ private:
 
     bool running = false;
     float offset = 0;
-
-    std::function<void(void *)> callback = nullptr;
-    void *userdata = nullptr;
 };

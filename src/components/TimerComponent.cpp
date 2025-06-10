@@ -1,16 +1,10 @@
 #include "jengine/components/TimerComponent.hpp"
 
-TimerComponent::TimerComponent(
-    float timeout,
-    bool restart,
-    std::function<void(void *)> callback,
-    void *userdata)
-    : timeout(timeout),
-      restart(restart),
-      callback(callback),
-      userdata(userdata)
+TimerComponent::TimerComponent(float timeout, bool restart) : timeout(timeout), restart(restart)
 {
     setName("TimerComponent");
+
+    events.createEvent<>("onTimeout");
 }
 
 void TimerComponent::update(float dt)
@@ -27,10 +21,7 @@ void TimerComponent::update(float dt)
         running = restart;
         offset = 0.0f;
 
-        if (callback)
-        {
-            callback(userdata);
-        }
+        events.trigger("onTimeout");
     }
 }
 
@@ -44,10 +35,4 @@ void TimerComponent::stop()
 {
     running = false;
     offset = 0.0f;
-}
-
-void TimerComponent::setCallback(std::function<void(void *)> cb, void *data)
-{
-    callback = cb;
-    userdata = data;
 }

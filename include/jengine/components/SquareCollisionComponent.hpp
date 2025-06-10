@@ -5,13 +5,15 @@
 class SquareCollisionComponent : public CollisionComponent
 {
 public:
-    SquareCollisionComponent(TransformComponent *transform, Vector size);
+    SquareCollisionComponent(Vector position, Vector size);
 
     bool collidesWith(const CollisionComponent &other) const;
 
     bool collidesWithSquare(const SquareCollisionComponent &square) const;
 
     Vector getSize() { return size; };
+
+    void setCentered(bool center);
 
 private:
     Vector size;

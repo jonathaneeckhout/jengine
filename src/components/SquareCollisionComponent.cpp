@@ -1,6 +1,6 @@
 #include "jengine/components/SquareCollisionComponent.hpp"
 
-SquareCollisionComponent::SquareCollisionComponent(TransformComponent *transform, Vector size) : CollisionComponent(transform), size(size)
+SquareCollisionComponent::SquareCollisionComponent(Vector position, Vector size) : CollisionComponent(position), size(size)
 {
     setName("SquareCollisionComponent");
 }
@@ -17,7 +17,7 @@ bool SquareCollisionComponent::collidesWith(const CollisionComponent &other) con
 
 bool SquareCollisionComponent::collidesWithSquare(const SquareCollisionComponent &square) const
 {
-    Vector aPos = center ? transform->getGlobalPosition() - size/2 : transform->getGlobalPosition();
+    Vector aPos = transform->getGlobalPosition();
     Vector aSize = size;
     Vector bPos = square.transform->getGlobalPosition();
     Vector bSize = square.size;
@@ -26,4 +26,17 @@ bool SquareCollisionComponent::collidesWithSquare(const SquareCollisionComponent
     bool yOverlap = aPos.y < bPos.y + bSize.y && aPos.y + aSize.y > bPos.y;
 
     return xOverlap && yOverlap;
+}
+
+void SquareCollisionComponent::setCentered(bool center)
+{
+    centered = center;
+    if (centered)
+    {
+        transform->setPosition(position - size / 2);
+    }
+    else
+    {
+        transform->setPosition(position);
+    }
 }
