@@ -26,12 +26,12 @@ TextButtonComponent::TextButtonComponent(
         events.trigger("onPressed");
     };
 
-    events.addHandler("onPressed", pressedAction);
+    buttonComp->addEventHandler("onPressed", pressedAction);
 
     std::function<void(void)> releasedAction = [this]
     {
         events.trigger("onReleased");
     };
 
-    events.addHandler("onReleased", releasedAction);
+    buttonComp->addEventHandler("onReleased", releasedAction);
 }
