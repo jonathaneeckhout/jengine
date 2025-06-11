@@ -2,35 +2,29 @@
 
 Resources::Resources() {}
 
-Resources::~Resources()
-{
-    for (auto &resource : resources)
-    {
-        SDL_CloseIO(resource.second);
-    }
-}
+Resources::~Resources() {}
 
-bool Resources::loadResource(const std::string &name, unsigned char *data, size_t size)
+bool Resources::loadResource(const std::string &name, const unsigned char *data, size_t size)
 {
-    SDL_IOStream *io = SDL_IOFromConstMem(data, size);
-    if (io == NULL)
+    if (data == nullptr || size == 0)
     {
         return false;
     }
 
-    resources[name] = io;
-
+    ResourceData res;
+    res.data = data;
+    res.size = size;
+    resources[name] = std::move(res);
     return true;
 }
 
-SDL_IOStream *Resources::getResource(const std::string &name)
+SDL_IOStream *Resources::getResource(const std::string &name) const
 {
     auto it = resources.find(name);
-
-    if (it != resources.end())
+    if (it == resources.end())
     {
-        return it->second;
+        return nullptr;
     }
 
-    return nullptr;
+    return SDL_IOFromConstMem(it->second.data, it->second.size);
 }

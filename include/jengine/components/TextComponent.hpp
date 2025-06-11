@@ -28,7 +28,7 @@ private:
 
     TTF_Font *font = nullptr;
 
-    SDL_Surface *surface = nullptr;
-
     SDL_Texture *texture = nullptr;
+    int texture_width = 0;
+    int texture_height = 0;
 };

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <SDL3/SDL.h>
 
 class Resources
@@ -10,10 +11,16 @@ public:
     Resources();
     ~Resources();
 
-    bool loadResource(const std::string &name, unsigned char *data, size_t size);
+    bool loadResource(const std::string &name, const unsigned char *data, size_t size);
 
-    SDL_IOStream *getResource(const std::string &name);
+    SDL_IOStream *getResource(const std::string &name) const;
 
 private:
-    std::unordered_map<std::string, SDL_IOStream *> resources;
+    struct ResourceData
+    {
+        const unsigned char *data;
+        size_t size;
+    };
+
+    std::unordered_map<std::string, ResourceData> resources;
 };

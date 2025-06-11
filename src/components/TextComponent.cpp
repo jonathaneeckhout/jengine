@@ -7,7 +7,7 @@ TextComponent::TextComponent(
     unsigned int size,
     const std::string &resourceName)
 {
-    transform =  new TransformComponent(position);
+    transform = new TransformComponent(position);
     addChild(transform);
 
     auto fontIO = Game::getInstance()->resources->getResource(resourceName);
@@ -16,7 +16,7 @@ TextComponent::TextComponent(
         return;
     }
 
-    font = TTF_OpenFontIO(fontIO, false, size);
+    font = TTF_OpenFontIO(fontIO, true, size);
     if (font == NULL)
     {
         font = nullptr;
@@ -33,11 +33,7 @@ TextComponent::~TextComponent()
         TTF_CloseFont(font);
         font = nullptr;
     }
-    if (surface != nullptr)
-    {
-        SDL_DestroySurface(surface);
-        surface = nullptr;
-    }
+
     if (texture != nullptr)
     {
         SDL_DestroyTexture(texture);
@@ -53,11 +49,11 @@ void TextComponent::output()
 
     if (centered)
     {
-        rect = {position.x - (surface->w / 2), position.y - (surface->h / 2), float(surface->w), float(surface->h)};
+        rect = {position.x - (texture_width / 2), position.y - (texture_height / 2), float(texture_width), float(texture_height)};
     }
     else
     {
-        rect = {position.x, position.y, float(surface->w), float(surface->h)};
+        rect = {position.x, position.y, float(texture_width), float(texture_height)};
     }
 
     SDL_RenderTexture(Game::getInstance()->renderer->renderer, texture, NULL, &rect);
@@ -65,24 +61,20 @@ void TextComponent::output()
 
 void TextComponent::setText(const std::string &text)
 {
-    if (surface != nullptr)
-    {
-        SDL_DestroySurface(surface);
-        surface = nullptr;
-    }
-
     if (texture != nullptr)
     {
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
 
-    surface = TTF_RenderText_Blended(font, text.c_str(), text.length(), color);
+    SDL_Surface *surface = TTF_RenderText_Blended(font, text.c_str(), text.length(), color);
     if (surface == NULL)
     {
-        surface = nullptr;
         return;
     }
+
+    texture_width = surface->w;
+    texture_height = surface->h;
 
     texture = SDL_CreateTextureFromSurface(Game::getInstance()->renderer->renderer, surface);
     if (texture == NULL)
@@ -90,8 +82,9 @@ void TextComponent::setText(const std::string &text)
         texture = nullptr;
 
         SDL_DestroySurface(surface);
-        surface = nullptr;
 
         return;
     }
+
+    SDL_DestroySurface(surface);
 }

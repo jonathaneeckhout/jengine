@@ -20,6 +20,7 @@ public:
 
     bool loadSound(const std::string &soundName, const std::string &resourceName);
     bool loadSound(const std::string &soundName, const std::string &resourceName, float volume);
+    bool unloadSound(const std::string &soundName);
 
     bool playSound(const std::string &soundName);
     bool stopSound(const std::string &soundName);

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #include "jengine/core/Mixer.hpp"
 #include "jengine/core/Game.hpp"
@@ -22,14 +24,17 @@ Mixer::Mixer()
 
 Mixer::~Mixer()
 {
+    Mix_ChannelFinished(nullptr);
+
+    stopAllSounds();
+
+    // This delay is needed to clear all audio buffers
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
     for (auto sound : sounds)
     {
         Mix_FreeChunk(sound.second);
     }
-
-    stopAllSounds();
-
-    Mix_Volume(-1, 0);
 
     Mix_CloseAudio();
 
@@ -49,7 +54,7 @@ bool Mixer::loadSound(const std::string &soundName, const std::string &resourceN
         return false;
     }
 
-    auto sound = Mix_LoadWAV_IO(resource, 0);
+    auto sound = Mix_LoadWAV_IO(resource, true);
     if (sound == NULL)
     {
         return false;
@@ -68,7 +73,7 @@ bool Mixer::loadSound(const std::string &soundName, const std::string &resourceN
         return false;
     }
 
-    auto sound = Mix_LoadWAV_IO(resource, 0);
+    auto sound = Mix_LoadWAV_IO(resource, true);
     if (sound == NULL)
     {
         return false;
@@ -78,6 +83,19 @@ bool Mixer::loadSound(const std::string &soundName, const std::string &resourceN
 
     sounds[soundName] = sound;
 
+    return true;
+}
+
+bool Mixer::unloadSound(const std::string &soundName)
+{
+    auto it = sounds.find(soundName);
+    if (it == sounds.end())
+    {
+        return false;
+    }
+
+    Mix_FreeChunk(it->second);
+    sounds.erase(it);
     return true;
 }
 

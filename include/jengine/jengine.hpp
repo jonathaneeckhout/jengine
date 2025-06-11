@@ -12,6 +12,8 @@
 #include <jengine/components/ButtonComponent.hpp>
 #include <jengine/components/CollisionComponent.hpp>
 #include <jengine/components/PhysicsComponent.hpp>
+#include <jengine/components/SoundLoaderComponent.hpp>
+#include <jengine/components/SpriteComponent.hpp>
 #include <jengine/components/SquareCollisionComponent.hpp>
 #include <jengine/components/SquareComponent.hpp>
 #include <jengine/components/TextButtonComponent.hpp>

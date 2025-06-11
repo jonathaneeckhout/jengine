@@ -8,11 +8,18 @@
 class SpriteComponent : public Object
 {
 public:
+    bool centered = false;
+
     SpriteComponent(Vector position, const std::string &resourceName);
+    ~SpriteComponent();
+
+    void output() override;
 
 private:
     Vector position;
     TransformComponent *transform = nullptr;
 
     SDL_Texture *texture = nullptr;
+    int texture_width = 0;
+    int texture_height = 0;
 };
