@@ -33,6 +33,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SDL_mixer)
 
+FetchContent_Declare(
+    SDL_image
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+    GIT_TAG release-3.2.4
+)
+
+FetchContent_MakeAvailable(SDL_image)
+
 # Source files
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
@@ -48,6 +56,7 @@ target_link_libraries(JEngine PUBLIC
     SDL3::SDL3-static
     SDL3_ttf::SDL3_ttf-static
     SDL3_mixer::SDL3_mixer-static
+    SDL3_image::SDL3_image-static
 )
 
 enable_testing()
