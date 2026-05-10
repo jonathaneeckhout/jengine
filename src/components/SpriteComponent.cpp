@@ -8,7 +8,7 @@ SpriteComponent::SpriteComponent(Vector position, const std::string &resourceNam
     transform = new TransformComponent(position);
     addChild(transform);
 
-    auto imgIO = Game::getInstance()->resources->getResource(resourceName);
+    auto imgIO = Game::getInstance()->resources->createResourceStream(resourceName);
     if (imgIO == nullptr)
     {
         return;
@@ -17,8 +17,11 @@ SpriteComponent::SpriteComponent(Vector position, const std::string &resourceNam
     SDL_Surface *surface = IMG_LoadPNG_IO(imgIO);
     if (surface == NULL)
     {
+        SDL_CloseIO(imgIO);
         return;
     }
+
+    SDL_CloseIO(imgIO);
 
     texture_width = surface->w;
     texture_height = surface->h;

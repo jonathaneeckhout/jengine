@@ -18,7 +18,7 @@ bool Resources::loadResource(const std::string &name, const unsigned char *data,
     return true;
 }
 
-SDL_IOStream *Resources::getResource(const std::string &name) const
+SDL_IOStream *Resources::createResourceStream(const std::string &name) const
 {
     auto it = resources.find(name);
     if (it == resources.end())

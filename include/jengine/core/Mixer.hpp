@@ -11,12 +11,10 @@
 class Mixer
 {
 public:
-    SDL_AudioDeviceID audioDevice;
+    MIX_Mixer *mixer;
 
     Mixer();
-    ~Mixer();
-
-    void update(float dt);
+    ~Mixer() noexcept;
 
     bool loadSound(const std::string &soundName, const std::string &resourceName);
     bool loadSound(const std::string &soundName, const std::string &resourceName, float volume);
@@ -24,28 +22,19 @@ public:
 
     bool playSound(const std::string &soundName);
     bool stopSound(const std::string &soundName);
-    void stopAllSounds();
 
     void setMasterVolume(int volume);
     void mute();
     void unMute();
 
-    bool isMuted();
-
-    void __onChannelFinished(int channel);
+    bool isMuted() const;
 
 private:
-    std::unordered_map<std::string, Mix_Chunk *> sounds;
-    std::unordered_map<std::string, std::unordered_set<int>> playingChannels;
-    std::unordered_map<int, std::string> channelToSound;
+    std::unordered_map<std::string, MIX_Track *> sounds;
 
-    std::vector<int> channelsToRemove;
-    std::mutex channelsMutex;
-
-    int masterVolume = MIX_MAX_VOLUME;
     bool muted = false;
 
-    static void channelFinishedCallback(int channel);
-    void processDeferredRemovals();
-    void removeChannel(int channel);
+    float last_volume = 100.0f;
+
+    MIX_Track *getSound(const std::string &soundName) const;
 };

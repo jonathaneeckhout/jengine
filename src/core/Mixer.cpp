@@ -1,213 +1,162 @@
-#include <iostream>
-#include <thread>
-#include <chrono>
-
 #include "jengine/core/Mixer.hpp"
 #include "jengine/core/Game.hpp"
 #include "jengine/core/Resources.hpp"
 
 Mixer::Mixer()
 {
-    audioDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-    if (!audioDevice)
+    if (!MIX_Init())
     {
+        throw std::runtime_error("Couldn't initialize SDL_mixer");
+    }
+
+    mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+    if (!mixer)
+    {
+        MIX_Quit();
+
         throw std::runtime_error("Failed to open audiodevice");
     }
-
-    if (!Mix_OpenAudio(audioDevice, NULL))
-    {
-        throw std::runtime_error("Failed to open  mixer");
-    }
-
-    Mix_ChannelFinished(&Mixer::channelFinishedCallback);
 }
 
-Mixer::~Mixer()
+Mixer::~Mixer() noexcept
 {
-    Mix_ChannelFinished(nullptr);
-
-    stopAllSounds();
-
-    // This delay is needed to clear all audio buffers
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    for (auto sound : sounds)
+    for (auto &[name, track] : sounds)
     {
-        Mix_FreeChunk(sound.second);
+        MIX_DestroyTrack(track);
     }
 
-    Mix_CloseAudio();
+    sounds.clear();
 
-    SDL_CloseAudioDevice(audioDevice);
-}
+    MIX_DestroyMixer(mixer);
 
-void Mixer::update(float)
-{
-    processDeferredRemovals();
+    MIX_Quit();
 }
 
 bool Mixer::loadSound(const std::string &soundName, const std::string &resourceName)
 {
-    auto resource = Game::getInstance()->resources->getResource(resourceName);
+    if (getSound(soundName) != nullptr)
+    {
+        return false;
+    }
+
+    auto resource = Game::getInstance()->resources->createResourceStream(resourceName);
     if (resource == nullptr)
     {
         return false;
     }
 
-    auto sound = Mix_LoadWAV_IO(resource, true);
-    if (sound == NULL)
+    MIX_Audio *audio = MIX_LoadAudio_IO(mixer, resource, false, true);
+    if (audio == nullptr)
     {
         return false;
     }
 
-    sounds[soundName] = sound;
+    MIX_Track *track = MIX_CreateTrack(mixer);
+    if (track == nullptr)
+    {
+        MIX_DestroyAudio(audio);
+        return false;
+    }
+
+    if (!MIX_SetTrackAudio(track, audio))
+    {
+        MIX_DestroyTrack(track);
+
+        MIX_DestroyAudio(audio);
+        return false;
+    }
+
+    MIX_DestroyAudio(audio);
+
+    sounds[soundName] = track;
 
     return true;
 }
 
 bool Mixer::loadSound(const std::string &soundName, const std::string &resourceName, float volume)
 {
-    auto resource = Game::getInstance()->resources->getResource(resourceName);
-    if (resource == nullptr)
+
+    if (!loadSound(soundName, resourceName))
     {
         return false;
     }
 
-    auto sound = Mix_LoadWAV_IO(resource, true);
-    if (sound == NULL)
-    {
-        return false;
-    }
+    MIX_Track *track = getSound(soundName);
 
-    Mix_VolumeChunk(sound, static_cast<int>(MIX_MAX_VOLUME * volume));
-
-    sounds[soundName] = sound;
-
-    return true;
+    return MIX_SetTrackGain(track, volume);
 }
 
 bool Mixer::unloadSound(const std::string &soundName)
 {
+
     auto it = sounds.find(soundName);
     if (it == sounds.end())
     {
         return false;
     }
 
-    Mix_FreeChunk(it->second);
+    MIX_DestroyTrack(it->second);
+
     sounds.erase(it);
+
     return true;
 }
 
 bool Mixer::playSound(const std::string &soundName)
 {
-    auto sound = sounds.find(soundName);
-    if (sound == sounds.end())
+    auto sound = getSound(soundName);
+    if (sound == nullptr)
     {
         return false;
     }
 
-    int channel = Mix_PlayChannel(-1, sound->second, 0);
-    if (channel == -1)
-    {
-        return false;
-    }
-
-    playingChannels[soundName].insert(channel);
-    channelToSound[channel] = soundName;
-
-    return true;
+    return MIX_PlayTrack(sound, 0);
 }
 
 bool Mixer::stopSound(const std::string &soundName)
 {
-    auto it = playingChannels.find(soundName);
-    if (it == playingChannels.end())
+    auto sound = getSound(soundName);
+    if (sound == nullptr)
     {
         return false;
     }
 
-    for (int channel : it->second)
-    {
-        Mix_HaltChannel(channel);
-        channelToSound.erase(channel);
-    }
-
-    playingChannels.erase(it);
-    return true;
-}
-
-void Mixer::stopAllSounds()
-{
-    Mix_HaltChannel(-1);
-
-    playingChannels.clear();
-
-    channelToSound.clear();
-}
-
-void Mixer::channelFinishedCallback(int channel)
-{
-    Game::getInstance()->mixer->__onChannelFinished(channel);
-}
-
-void Mixer::__onChannelFinished(int channel)
-{
-    std::lock_guard<std::mutex> lock(channelsMutex);
-    channelsToRemove.push_back(channel);
-}
-
-void Mixer::processDeferredRemovals()
-{
-    std::lock_guard<std::mutex> lock(channelsMutex);
-    for (int channel : channelsToRemove)
-    {
-        removeChannel(channel);
-    }
-    channelsToRemove.clear();
-}
-
-void Mixer::removeChannel(int channel)
-{
-    auto it = channelToSound.find(channel);
-    if (it != channelToSound.end())
-    {
-        const std::string &soundName = it->second;
-        auto pit = playingChannels.find(soundName);
-        if (pit != playingChannels.end())
-        {
-            pit->second.erase(channel);
-            if (pit->second.empty())
-            {
-                playingChannels.erase(pit);
-            }
-        }
-        channelToSound.erase(it);
-    }
+    return MIX_StopTrack(sound, 0);
 }
 
 void Mixer::setMasterVolume(int volume)
 {
-    masterVolume = volume;
-
-    Mix_MasterVolume(masterVolume);
+    MIX_SetMixerGain(mixer, volume);
 }
 
 void Mixer::mute()
 {
     muted = true;
 
-    Mix_MasterVolume(0);
+    last_volume = MIX_GetMixerGain(mixer);
+
+    setMasterVolume(0);
 }
 
 void Mixer::unMute()
 {
     muted = false;
 
-    Mix_MasterVolume(masterVolume);
+    setMasterVolume(last_volume);
 }
 
-bool Mixer::isMuted()
+bool Mixer::isMuted() const
 {
     return muted;
+}
+
+MIX_Track *Mixer::getSound(const std::string &soundName) const
+{
+    auto sound = sounds.find(soundName);
+    if (sound == sounds.end())
+    {
+        return nullptr;
+    }
+
+    return sound->second;
 }

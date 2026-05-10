@@ -13,7 +13,7 @@ public:
 
     bool loadResource(const std::string &name, const unsigned char *data, size_t size);
 
-    SDL_IOStream *getResource(const std::string &name) const;
+    SDL_IOStream *createResourceStream(const std::string &name) const;
 
 private:
     struct ResourceData

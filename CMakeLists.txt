@@ -12,7 +12,7 @@ include(FetchContent)
 FetchContent_Declare(
     SDL
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG release-3.2.14
+    GIT_TAG release-3.4.8
 )
 
 FetchContent_MakeAvailable(SDL)
@@ -28,7 +28,7 @@ FetchContent_MakeAvailable(SDL_ttf)
 FetchContent_Declare(
     SDL_mixer
     GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
-    GIT_TAG main
+    GIT_TAG release-3.2.0
 )
 
 FetchContent_MakeAvailable(SDL_mixer)
@@ -36,7 +36,7 @@ FetchContent_MakeAvailable(SDL_mixer)
 FetchContent_Declare(
     SDL_image
     GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-    GIT_TAG release-3.2.4
+    GIT_TAG release-3.4.4
 )
 
 FetchContent_MakeAvailable(SDL_image)

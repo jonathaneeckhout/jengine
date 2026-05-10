@@ -10,7 +10,7 @@ TextComponent::TextComponent(
     transform = new TransformComponent(position);
     addChild(transform);
 
-    auto fontIO = Game::getInstance()->resources->getResource(resourceName);
+    auto fontIO = Game::getInstance()->resources->createResourceStream(resourceName);
     if (fontIO == nullptr)
     {
         return;

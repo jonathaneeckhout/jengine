@@ -12,7 +12,7 @@ ParallaxComponent::ParallaxComponent(
     transform = new TransformComponent(position, direction);
     addChild(transform);
 
-    auto imgIO = Game::getInstance()->resources->getResource(resourceName);
+    auto imgIO = Game::getInstance()->resources->createResourceStream(resourceName);
     if (imgIO == nullptr)
     {
         return;
@@ -21,8 +21,11 @@ ParallaxComponent::ParallaxComponent(
     SDL_Surface *surface = IMG_LoadPNG_IO(imgIO);
     if (surface == NULL)
     {
+        SDL_CloseIO(imgIO);
         return;
     }
+
+    SDL_CloseIO(imgIO);
 
     texture_width = surface->w;
     texture_height = surface->h;
